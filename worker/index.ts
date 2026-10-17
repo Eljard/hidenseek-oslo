@@ -461,7 +461,13 @@ export class GameRoom {
         }
     }
     webSocketClose(socket: Socket, code: number, reason: string) {
-        socket.close(code === 1005 ? 1000 : code, reason);
+        // Abnormal disconnects report reserved codes that cannot be echoed.
+        const reply = [1005, 1006, 1015].includes(code) ? 1000 : code;
+        try {
+            socket.close(reply, reason);
+        } catch {
+            /* Already closed. */
+        }
     }
     webSocketError(socket: Socket) {
         socket.close(1011, "Reconnect");
