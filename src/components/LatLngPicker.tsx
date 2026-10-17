@@ -15,6 +15,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { allowGooglePlusCodes, isLoading } from "@/lib/context";
 import { cn } from "@/lib/utils";
 import { determineName, geocode, ICON_COLORS } from "@/maps/api";
+import { legacyText } from "@/oslo/legacy-i18n";
 
 import { Button } from "./ui/button";
 import {
@@ -147,7 +148,7 @@ const LatLngEditForm = ({
         <>
             <Command shouldFilter={false}>
                 <CommandInput
-                    placeholder="Search place..."
+                    placeholder={legacyText("Search place...")}
                     onKeyUp={(x) => setInputValue(x.currentTarget.value)}
                     disabled={disabled}
                 />
@@ -182,7 +183,7 @@ const LatLngEditForm = ({
                 </CommandList>
             </Command>
             <div className="flex gap-2 items-center">
-                <Label className="min-w-16">Latitude</Label>
+                <Label className="min-w-16">{legacyText("Latitude")}</Label>
                 <Input
                     type="number"
                     value={Math.abs(latitude)}
@@ -207,7 +208,7 @@ const LatLngEditForm = ({
                 </Button>
             </div>
             <div className="flex gap-2 items-center">
-                <Label className="min-w-16">Longitude</Label>
+                <Label className="min-w-16">{legacyText("Longitude")}</Label>
                 <Input
                     type="number"
                     value={Math.abs(longitude)}
@@ -237,12 +238,16 @@ const LatLngEditForm = ({
                     <Separator />
 
                     <div className="flex gap-2 items-center">
-                        <Label className="min-w-32">Google Plus Code</Label>
+                        <Label className="min-w-32">
+                            {legacyText("Google Plus Code")}
+                        </Label>
                         <Input
                             type="text"
                             disabled={disabled}
                             ref={googlePlusCodesRef}
-                            placeholder="i.e., Q9CM+3P Narita, Chiba, Japan"
+                            placeholder={legacyText(
+                                "i.e., Q9CM+3P Narita, Chiba, Japan",
+                            )}
                         />
                         <Button
                             variant="secondary"
@@ -301,7 +306,7 @@ const LatLngEditForm = ({
                             }}
                             disabled={disabled}
                         >
-                            Import
+                            {legacyText("Import")}
                         </Button>
                     </div>
                 </>
@@ -394,7 +399,7 @@ export const LatitudeLongitude = ({
                                 <Button
                                     disabled={disabled}
                                     variant="outline"
-                                    title="Edit coordinates"
+                                    title={legacyText("Edit coordinates")}
                                 >
                                     <EditIcon />
                                 </Button>
@@ -402,7 +407,8 @@ export const LatitudeLongitude = ({
                             <DialogContent>
                                 <DialogHeader>
                                     <DialogTitle className="text-2xl">
-                                        Update {label}
+                                        {legacyText("Update")}
+                                        {label}
                                     </DialogTitle>
                                 </DialogHeader>
                                 <LatLngEditForm
@@ -413,7 +419,7 @@ export const LatitudeLongitude = ({
                                 />
                                 <DialogFooter>
                                     <DialogClose asChild>
-                                        <Button>Done</Button>
+                                        <Button>{legacyText("Done")}</Button>
                                     </DialogClose>
                                 </DialogFooter>
                             </DialogContent>
@@ -465,7 +471,7 @@ export const LatitudeLongitude = ({
                                 );
                             }}
                             disabled={disabled}
-                            title="Set to current location"
+                            title={legacyText("Set to current location")}
                         >
                             <LocateIcon />
                         </Button>
@@ -514,7 +520,9 @@ export const LatitudeLongitude = ({
                                 );
                             }}
                             disabled={disabled}
-                            title="Paste coordinates from clipboard"
+                            title={legacyText(
+                                "Paste coordinates from clipboard",
+                            )}
                         >
                             <ClipboardPasteIcon />
                         </Button>
@@ -542,7 +550,7 @@ export const LatitudeLongitude = ({
                                     { autoClose: 1000 },
                                 );
                             }}
-                            title="Copy coordinates to clipboard"
+                            title={legacyText("Copy coordinates to clipboard")}
                         >
                             <ClipboardCopyIcon />
                         </Button>

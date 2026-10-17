@@ -61,6 +61,8 @@ import {
     mergeDuplicateStation,
     safeUnion,
 } from "@/maps/geo-utils";
+import { legacyText } from "@/oslo/legacy-i18n";
+import { language } from "@/oslo/state";
 
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
@@ -87,6 +89,7 @@ let buttonJustClicked = false;
 
 export const ZoneSidebar = () => {
     const $displayHidingZones = useStore(displayHidingZones);
+    useStore(language);
     const $questionFinishedMapData = useStore(questionFinishedMapData);
     const $displayHidingZonesOptions = useStore(displayHidingZonesOptions);
     const $displayHidingZonesStyle = useStore(displayHidingZonesStyle);
@@ -438,6 +441,7 @@ export const ZoneSidebar = () => {
 
         if ($displayHidingZones && $questionFinishedMapData) {
             initializeHidingZones().catch((error) => {
+                isLoading.set(false);
                 console.log("Error in hiding zone initialization:", error);
                 toast.error(
                     "An error occurred during hiding zone initialization",
@@ -509,11 +513,21 @@ export const ZoneSidebar = () => {
     return (
         <Sidebar side="right">
             <div className="flex items-center justify-between">
-                <h2 className="ml-4 mt-4 font-poppins text-2xl">Hiding Zone</h2>
+                <h2 className="ml-4 mt-4 font-poppins text-2xl">
+                    {legacyText("Hiding Zone")}
+                </h2>
                 <SidebarCloseIcon
-                    className="mr-2 visible md:hidden scale-x-[-1]"
+                    className="mr-2 cursor-pointer scale-x-[-1]"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={legacyText("Close")}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ")
+                            SidebarContext.get().toggleSidebar();
+                    }}
                     onClick={() => {
                         SidebarContext.get().setOpenMobile(false);
+                        SidebarContext.get().setOpen(false);
                     }}
                 />
             </div>
@@ -524,7 +538,7 @@ export const ZoneSidebar = () => {
                         <SidebarMenu>
                             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                                 <Label className="font-semibold font-poppins">
-                                    Display hiding zones?
+                                    {legacyText("Display hiding zones?")}
                                 </Label>
                                 <Checkbox
                                     defaultChecked={$displayHidingZones}
@@ -539,13 +553,14 @@ export const ZoneSidebar = () => {
                                     "text-orange-500",
                                 )}
                             >
-                                Warning: This feature can drastically slow down
-                                your device.
+                                {legacyText(
+                                    "Warning: This feature can drastically slow down your device.",
+                                )}
                             </SidebarMenuItem>
                             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                                 <div className="flex flex-row items-center justify-between w-full">
                                     <Label className="font-semibold font-poppins">
-                                        Use custom station list?
+                                        {legacyText("Use custom station list?")}
                                     </Label>
                                     <Checkbox
                                         checked={useCustomStations}
@@ -559,7 +574,9 @@ export const ZoneSidebar = () => {
                             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                                 <div className="flex flex-row items-center justify-between w-full">
                                     <Label className="font-semibold font-poppins">
-                                        Merge duplicated stations?
+                                        {legacyText(
+                                            "Merge duplicated stations?",
+                                        )}
                                     </Label>
                                     <Checkbox
                                         checked={mergeDuplicates}
@@ -577,13 +594,15 @@ export const ZoneSidebar = () => {
                                     >
                                         <div className="flex flex-col gap-2 w-full">
                                             <Label className="font-semibold font-poppins leading-5">
-                                                Import stations from URL (CSV,
-                                                GeoJSON, KML). This must be a
-                                                raw file link.
+                                                {legacyText(
+                                                    "Import stations from URL (CSV, GeoJSON, KML). This must be a raw file link.",
+                                                )}
                                             </Label>
                                             <div className="flex gap-2">
                                                 <Input
-                                                    placeholder="https://..."
+                                                    placeholder={legacyText(
+                                                        "https://...",
+                                                    )}
                                                     value={importUrl}
                                                     onChange={(e) =>
                                                         setImportUrl(
@@ -636,7 +655,7 @@ export const ZoneSidebar = () => {
                                                         }
                                                     }}
                                                 >
-                                                    Import
+                                                    {legacyText("Import")}
                                                 </button>
                                             </div>
                                             <div>
@@ -721,8 +740,9 @@ export const ZoneSidebar = () => {
                                             </div>
                                             <div className="flex flex-row items-center justify-between w-full">
                                                 <Label className="font-semibold font-poppins">
-                                                    Include default stations
-                                                    with custom list?
+                                                    {legacyText(
+                                                        "Include default stations with custom list?",
+                                                    )}
                                                 </Label>
                                                 <Checkbox
                                                     checked={
@@ -753,7 +773,9 @@ export const ZoneSidebar = () => {
                                                             )
                                                         }
                                                     >
-                                                        Clear Imported
+                                                        {legacyText(
+                                                            "Clear Imported",
+                                                        )}
                                                     </Button>
                                                 </div>
                                             )}
@@ -821,7 +843,9 @@ export const ZoneSidebar = () => {
                                         displayHidingZonesOptions.set
                                     }
                                     defaultValue={$displayHidingZonesOptions}
-                                    placeholder="Select allowed places"
+                                    placeholder={legacyText(
+                                        "Select allowed places",
+                                    )}
                                     animation={2}
                                     maxCount={3}
                                     modalPopover
@@ -835,7 +859,7 @@ export const ZoneSidebar = () => {
                             </SidebarMenuItem>
                             <SidebarMenuItem>
                                 <Label className="font-semibold font-poppins ml-2">
-                                    Hiding Zone Radius
+                                    {legacyText("Hiding Zone Radius")}
                                 </Label>
                                 <div
                                     className={cn(
@@ -874,7 +898,7 @@ export const ZoneSidebar = () => {
                                     }}
                                     disabled={$isLoading}
                                 >
-                                    No Display
+                                    {legacyText("No Display")}
                                 </SidebarMenuItem>
                             )}
                             {$displayHidingZones && stations.length > 0 && (
@@ -886,7 +910,7 @@ export const ZoneSidebar = () => {
                                     }}
                                     disabled={$isLoading}
                                 >
-                                    All Stations
+                                    {legacyText("All Stations")}
                                 </SidebarMenuItem>
                             )}
                             {$displayHidingZones && stations.length > 0 && (
@@ -898,7 +922,7 @@ export const ZoneSidebar = () => {
                                     }}
                                     disabled={$isLoading}
                                 >
-                                    All Zones
+                                    {legacyText("All Zones")}
                                 </SidebarMenuItem>
                             )}
                             {$displayHidingZones && stations.length > 0 && (
@@ -912,7 +936,7 @@ export const ZoneSidebar = () => {
                                     }}
                                     disabled={$isLoading}
                                 >
-                                    No Overlap
+                                    {legacyText("No Overlap")}
                                 </SidebarMenuItem>
                             )}
                             {$displayHidingZones && hidingZoneModeStationID && (
@@ -923,7 +947,7 @@ export const ZoneSidebar = () => {
                                     )}
                                     disabled={$isLoading}
                                 >
-                                    Current:{" "}
+                                    {legacyText("Current:")}{" "}
                                     {(() => {
                                         const selected = stations.find(
                                             (x) =>
@@ -965,7 +989,7 @@ export const ZoneSidebar = () => {
                                         }}
                                         disabled={$isLoading}
                                     >
-                                        Clear Disabled
+                                        {legacyText("Clear Disabled")}
                                     </SidebarMenuItem>
                                 )}
                             {$displayHidingZones && (
@@ -981,7 +1005,7 @@ export const ZoneSidebar = () => {
                                     }}
                                     disabled={$isLoading}
                                 >
-                                    Disable All
+                                    {legacyText("Disable All")}
                                 </SidebarMenuItem>
                             )}
                             {$displayHidingZones && (
@@ -994,14 +1018,18 @@ export const ZoneSidebar = () => {
                                     shouldFilter={isStationSearchActive}
                                 >
                                     <CommandInput
-                                        placeholder="Search for a hiding zone..."
+                                        placeholder={legacyText(
+                                            "Search for a hiding zone...",
+                                        )}
                                         value={stationSearch}
                                         onValueChange={setStationSearch}
                                         disabled={$isLoading}
                                     />
                                     <CommandList className="max-h-full">
                                         <CommandEmpty>
-                                            No hiding zones found.
+                                            {legacyText(
+                                                "No hiding zones found.",
+                                            )}
                                         </CommandEmpty>
                                         <CommandGroup>
                                             {stations.map((station) => (
@@ -1093,7 +1121,7 @@ export const ZoneSidebar = () => {
                                                         className="bg-slate-600 p-0.5 rounded-md"
                                                         disabled={$isLoading}
                                                     >
-                                                        View
+                                                        {legacyText("View")}
                                                     </button>
                                                 </CommandItem>
                                             ))}

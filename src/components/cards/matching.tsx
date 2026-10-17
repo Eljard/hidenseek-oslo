@@ -34,6 +34,7 @@ import {
     matchingQuestionSchema,
     NO_GROUP,
 } from "@/maps/schema";
+import { legacyText } from "@/oslo/legacy-i18n";
 
 import { QuestionCard } from "./base";
 
@@ -76,7 +77,7 @@ export const MatchingQuestionComponent = ({
                 <>
                     <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                         <Select
-                            trigger="OSM Zone"
+                            trigger={legacyText("OSM Zone")}
                             options={{
                                 2: "OSM Zone 2 (Country)",
                                 3: "OSM Zone 3 (region in Japan)",
@@ -108,9 +109,9 @@ export const MatchingQuestionComponent = ({
                     </SidebarMenuItem>
                     {data.type === "letter-zone" && (
                         <span className="px-2 text-center text-orange-500">
-                            Warning: The zone data has been simplified by
-                            &plusmn;360 feet (100 meters) in order for the
-                            browser to not crash.
+                            {legacyText(
+                                "Warning: The zone data has been simplified by ±360 feet (100 meters) in order for the browser to not crash.",
+                            )}
                         </span>
                     )}
                 </>
@@ -119,10 +120,9 @@ export const MatchingQuestionComponent = ({
         case "same-train-line":
             questionSpecific = (
                 <span className="px-2 text-center text-orange-500">
-                    Warning: The train line data is based on OpenStreetMap and
-                    may have fewer train stations than expected. If you are
-                    using this tool, ensure that the other players are also
-                    using this tool.
+                    {legacyText(
+                        "Warning: The train line data is based on OpenStreetMap and may have fewer train stations than expected. If you are using this tool, ensure that the other players are also using this tool.",
+                    )}
                 </span>
             );
             break;
@@ -139,8 +139,9 @@ export const MatchingQuestionComponent = ({
         case "park":
             questionSpecific = (
                 <span className="px-2 text-center text-orange-500">
-                    This question will only influence the map when you click on
-                    a hiding zone in the hiding zone sidebar.
+                    {legacyText(
+                        "This question will only influence the map when you click on a hiding zone in the hiding zone sidebar.",
+                    )}
                 </span>
             );
             break;
@@ -150,9 +151,9 @@ export const MatchingQuestionComponent = ({
                 questionSpecific = (
                     <>
                         <p className="px-2 mb-1 text-center text-orange-500">
-                            To modify the matching{" "}
-                            {data.type === "custom-zone" ? "zones" : "points"},
-                            enable it:
+                            {legacyText("To modify the matching")}{" "}
+                            {data.type === "custom-zone" ? "zones" : "points"}
+                            {legacyText(", enable it:")}
                             <Checkbox
                                 className="mx-1 my-1"
                                 checked={$drawingQuestionKey === questionKey}
@@ -165,7 +166,9 @@ export const MatchingQuestionComponent = ({
                                 }}
                                 disabled={$isLoading}
                             />
-                            and use the buttons at the bottom left of the map.
+                            {legacyText(
+                                "and use the buttons at the bottom left of the map.",
+                            )}
                         </p>
                         <div className="flex justify-center mb-2">
                             <PresetsDialog
@@ -243,7 +246,7 @@ export const MatchingQuestionComponent = ({
             />
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
-                    trigger="Matching Type"
+                    trigger={legacyText("Matching Type")}
                     options={Object.fromEntries(
                         matchingQuestionSchema.options
                             .filter((x) => x.description === NO_GROUP)
@@ -399,7 +402,7 @@ export const MatchingQuestionComponent = ({
                         data.type === "same-length-station" && "text-center",
                     )}
                 >
-                    Result
+                    {legacyText("Result")}
                 </Label>
                 {data.type === "same-length-station" ? (
                     <ToggleGroup
@@ -433,10 +436,14 @@ export const MatchingQuestionComponent = ({
                         disabled={!!$hiderMode || !data.drag || $isLoading}
                     >
                         <ToggleGroupItem value="shorter">
-                            Shorter
+                            {legacyText("Shorter")}
                         </ToggleGroupItem>
-                        <ToggleGroupItem value="same">Same</ToggleGroupItem>
-                        <ToggleGroupItem value="longer">Longer</ToggleGroupItem>
+                        <ToggleGroupItem value="same">
+                            {legacyText("Same")}
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="longer">
+                            {legacyText("Longer")}
+                        </ToggleGroupItem>
                     </ToggleGroup>
                 ) : (
                     <ToggleGroup
@@ -453,9 +460,11 @@ export const MatchingQuestionComponent = ({
                         disabled={!!$hiderMode || !data.drag || $isLoading}
                     >
                         <ToggleGroupItem value="different">
-                            Different
+                            {legacyText("Different")}
                         </ToggleGroupItem>
-                        <ToggleGroupItem value="same">Same</ToggleGroupItem>
+                        <ToggleGroupItem value="same">
+                            {legacyText("Same")}
+                        </ToggleGroupItem>
                     </ToggleGroup>
                 )}
             </div>

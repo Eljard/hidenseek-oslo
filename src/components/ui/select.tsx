@@ -3,6 +3,7 @@ import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { legacyText } from "@/oslo/legacy-i18n";
 
 type Options<T extends string> = Partial<Record<T, string>>;
 
@@ -155,7 +156,7 @@ const Select = <T extends string>({
                         !displayValue && "text-muted-foreground",
                     )}
                 >
-                    {displayValue ?? placeholder}
+                    {legacyText(displayValue ?? placeholder)}
                 </span>
                 <ChevronDown className="h-4 w-4 opacity-50 shrink-0 ml-2" />
             </PopoverPrimitive.Trigger>
@@ -198,7 +199,7 @@ const Select = <T extends string>({
                                 selected={k === value}
                                 onSelect={() => handleSelect(k as T)}
                             >
-                                {label as string}
+                                {legacyText(label as string)}
                             </SelectItem>
                         ))}
                     {groups &&
@@ -214,7 +215,7 @@ const Select = <T extends string>({
                             return (
                                 <div key={label}>
                                     <div className="py-1.5 pl-8 pr-2 text-sm font-semibold">
-                                        {label}
+                                        {legacyText(label)}
                                     </div>
                                     {Object.entries(opts).map(
                                         ([k, itemLabel]) => (
@@ -226,7 +227,9 @@ const Select = <T extends string>({
                                                     handleSelect(k as T)
                                                 }
                                             >
-                                                {itemLabel as string}
+                                                {legacyText(
+                                                    itemLabel as string,
+                                                )}
                                             </SelectItem>
                                         ),
                                     )}

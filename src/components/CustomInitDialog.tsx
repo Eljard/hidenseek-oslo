@@ -13,6 +13,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { customInitPreference } from "@/lib/context";
+import { legacyText } from "@/oslo/legacy-i18n";
 
 type Props = {
     open: boolean;
@@ -45,10 +46,13 @@ export const CustomInitDialog: React.FC<Props> = ({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>New Custom Question</DialogTitle>
+                    <DialogTitle>
+                        {legacyText("New Custom Question")}
+                    </DialogTitle>
                     <DialogDescription>
-                        Do you want the new question to start blank, or copy
-                        what the current question contains?
+                        {legacyText(
+                            "Do you want the new question to start blank, or copy what the current question contains?",
+                        )}
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex items-center gap-2">
@@ -58,14 +62,16 @@ export const CustomInitDialog: React.FC<Props> = ({
                         onCheckedChange={(c) => setRemember(Boolean(c))}
                     />
                     <label htmlFor={checkboxId} className="text-sm">
-                        Remember my choice
+                        {legacyText("Remember my choice")}
                     </label>
                 </div>
                 <DialogFooter>
                     <Button variant="secondary" onClick={handleBlank}>
-                        Start blank
+                        {legacyText("Start blank")}
                     </Button>
-                    <Button onClick={handlePrefill}>Copy from current</Button>
+                    <Button onClick={handlePrefill}>
+                        {legacyText("Copy from current")}
+                    </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

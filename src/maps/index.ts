@@ -102,8 +102,8 @@ export async function adjustMapGeoDataForQuestion(
             default:
                 return mapGeoData;
         }
-    } catch {
-        return mapGeoData;
+    } catch (error) {
+        throw new Error(`Unable to calculate ${question.id}`, { cause: error });
     }
 }
 
@@ -131,6 +131,14 @@ export async function applyQuestionsToMapGeoData(
         }
 
         mapGeoData = await adjustMapGeoDataForQuestion(question, mapGeoData);
+
+        if (
+            !mapGeoData ||
+            (mapGeoData.type === "FeatureCollection" &&
+                !mapGeoData.features.length)
+        ) {
+            return { type: "FeatureCollection", features: [] };
+        }
 
         if (mapGeoData.type !== "FeatureCollection") {
             mapGeoData = {

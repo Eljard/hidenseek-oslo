@@ -262,6 +262,7 @@ const tutorialSteps: TutorialStep[] = [
                             questionKey={Math.random()}
                             data={{
                                 collapsed: false,
+                                hidden: false,
                                 drag: true,
                                 lat: 35.6762,
                                 lng: 139.6503,
@@ -312,6 +313,7 @@ const tutorialSteps: TutorialStep[] = [
                             questionKey={Math.random()}
                             data={{
                                 collapsed: false,
+                                hidden: false,
                                 drag: true,
                                 latA: 35.6762,
                                 lngA: 139.6503,
@@ -359,6 +361,7 @@ const tutorialSteps: TutorialStep[] = [
                             questionKey={Math.random()}
                             data={{
                                 collapsed: false,
+                                hidden: false,
                                 drag: true,
                                 lat: 35.6762,
                                 lng: 139.6503,
@@ -410,6 +413,7 @@ const tutorialSteps: TutorialStep[] = [
                             questionKey={Math.random()}
                             data={{
                                 collapsed: false,
+                                hidden: false,
                                 drag: true,
                                 lat: 35.6762,
                                 lng: 139.6503,
@@ -492,6 +496,7 @@ const tutorialSteps: TutorialStep[] = [
                             questionKey={Math.random()}
                             data={{
                                 collapsed: false,
+                                hidden: false,
                                 drag: true,
                                 lat: 35.6762,
                                 lng: 139.6503,

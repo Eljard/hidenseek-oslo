@@ -30,6 +30,7 @@ import {
     tentacleQuestionSchema,
     type TraditionalTentacleQuestion,
 } from "@/maps/schema";
+import { legacyText } from "@/oslo/legacy-i18n";
 
 import { QuestionCard } from "./base";
 
@@ -94,7 +95,7 @@ export const TentacleQuestionComponent = ({
             </SidebarMenuItem>
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
-                    trigger="Location Type"
+                    trigger={legacyText("Location Type")}
                     options={Object.fromEntries(
                         tentacleQuestionSchema.options
                             .filter((x) => x.description === NO_GROUP)
@@ -148,7 +149,7 @@ export const TentacleQuestionComponent = ({
             {data.locationType === "custom" && data.drag && (
                 <>
                     <p className="px-2 mb-1 text-center text-orange-500">
-                        To modify tentacle locations, enable it:
+                        {legacyText("To modify tentacle locations, enable it:")}
                         <Checkbox
                             className="mx-1 my-1"
                             checked={$drawingQuestionKey === questionKey}
@@ -161,7 +162,9 @@ export const TentacleQuestionComponent = ({
                             }}
                             disabled={!data.drag || $isLoading}
                         />
-                        and use the buttons at the bottom left of the map.
+                        {legacyText(
+                            "and use the buttons at the bottom left of the map.",
+                        )}
                     </p>
                     <div className="flex justify-center mb-2">
                         <PresetsDialog
@@ -304,7 +307,7 @@ const TentacleLocationSelector = ({
 
     return (
         <Select
-            trigger="Location"
+            trigger={legacyText("Location")}
             options={{
                 false: "Not Within",
                 ...mapToObj(filteredFeatures, (feature: any) => [

@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/sidebar-l";
 import { isLoading, questions } from "@/lib/context";
 import { cn } from "@/lib/utils";
+import { legacyText } from "@/oslo/legacy-i18n";
 
 export const QuestionCard = ({
     children,
@@ -106,15 +107,12 @@ export const QuestionCard = ({
                                 <DialogContent>
                                     <DialogHeader>
                                         <DialogTitle className="text-2xl">
-                                            Share this Question!
+                                            {legacyText("Share this Question!")}
                                         </DialogTitle>
                                         <DialogDescription>
-                                            Below you can access the JSON
-                                            representing the question. Send this
-                                            to another player for them to copy.
-                                            They can then click &ldquo;Paste
-                                            Question&rdquo; at the bottom of the
-                                            &ldquo;Questions&rdquo; sidebar.
+                                            {legacyText(
+                                                "Below you can access the JSON representing the question. Send this to another player for them to copy. They can then click “Paste Question” at the bottom of the “Questions” sidebar.",
+                                            )}
                                         </DialogDescription>
                                     </DialogHeader>
                                     <Button
@@ -177,7 +175,7 @@ export const QuestionCard = ({
                                                 });
                                         }}
                                     >
-                                        Copy to Clipboard
+                                        {legacyText("Copy to Clipboard")}
                                     </Button>
                                     <textarea
                                         className="w-full h-[300px] bg-slate-900 text-white rounded-md p-2"
@@ -205,24 +203,26 @@ export const QuestionCard = ({
                                 <AlertDialogContent>
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>
-                                            Are you absolutely sure?
+                                            {legacyText(
+                                                "Are you absolutely sure?",
+                                            )}
                                         </AlertDialogTitle>
                                         <AlertDialogDescription>
-                                            This action cannot be undone. This
-                                            will permanently delete the
-                                            question.
+                                            {legacyText(
+                                                "Delete this question? You can undo this change from the game panel.",
+                                            )}
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel>
-                                            Cancel
+                                            {legacyText("Cancel")}
                                         </AlertDialogCancel>
                                         <AlertDialogAction
                                             onClick={() => {
                                                 questions.set([]);
                                             }}
                                         >
-                                            Delete All Questions
+                                            {legacyText("Delete All Questions")}
                                         </AlertDialogAction>
                                         <AlertDialogAction
                                             onClick={() => {
@@ -236,7 +236,7 @@ export const QuestionCard = ({
                                             }}
                                             className="mb-2 sm:mb-0"
                                         >
-                                            Delete Question
+                                            {legacyText("Delete Question")}
                                         </AlertDialogAction>
                                     </AlertDialogFooter>
                                 </AlertDialogContent>

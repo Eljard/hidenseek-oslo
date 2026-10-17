@@ -34,6 +34,7 @@ import {
     measuringQuestionSchema,
     NO_GROUP,
 } from "@/maps/schema";
+import { legacyText } from "@/oslo/legacy-i18n";
 
 import { QuestionCard } from "./base";
 
@@ -72,7 +73,7 @@ export const MeasuringQuestionComponent = ({
                 <>
                     <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                         <Select
-                            trigger="OSM Zone"
+                            trigger={legacyText("OSM Zone")}
                             options={{
                                 2: "OSM Zone 2 (Country)",
                                 3: "OSM Zone 3 (region in Japan)",
@@ -131,10 +132,9 @@ export const MeasuringQuestionComponent = ({
         case "seven11":
             questionSpecific = (
                 <span className="px-2 text-center text-orange-500">
-                    This question will eliminate hiding zones that don&apos;t
-                    fit the criteria. When you click on a zone, the parts of
-                    that zone that don&apos;t satisfy the criteria will be
-                    eliminated.
+                    {legacyText(
+                        "This question will eliminate hiding zones that don't fit the criteria. When you click on a zone, the parts of that zone that don't satisfy the criteria will be eliminated.",
+                    )}
                 </span>
             );
             break;
@@ -151,8 +151,9 @@ export const MeasuringQuestionComponent = ({
         case "park":
             questionSpecific = (
                 <span className="px-2 text-center text-orange-500">
-                    This question will only influence the map when you click on
-                    a hiding zone in the hiding zone sidebar.
+                    {legacyText(
+                        "This question will only influence the map when you click on a hiding zone in the hiding zone sidebar.",
+                    )}
                 </span>
             );
             break;
@@ -161,7 +162,9 @@ export const MeasuringQuestionComponent = ({
                 questionSpecific = (
                     <>
                         <p className="px-2 mb-1 text-center text-orange-500">
-                            To modify the measuring question, enable it:
+                            {legacyText(
+                                "To modify the measuring question, enable it:",
+                            )}
                             <Checkbox
                                 className="mx-1 my-1"
                                 checked={$drawingQuestionKey === questionKey}
@@ -174,7 +177,9 @@ export const MeasuringQuestionComponent = ({
                                 }}
                                 disabled={!data.drag || $isLoading}
                             />
-                            and use the buttons at the bottom left of the map.
+                            {legacyText(
+                                "and use the buttons at the bottom left of the map.",
+                            )}
                         </p>
                         <div className="flex justify-center mb-2">
                             <PresetsDialog
@@ -235,7 +240,7 @@ export const MeasuringQuestionComponent = ({
             />
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
-                    trigger="Measuring Type"
+                    trigger={legacyText("Measuring Type")}
                     options={Object.fromEntries(
                         measuringQuestionSchema.options
                             .filter((x) => x.description === NO_GROUP)
@@ -348,7 +353,7 @@ export const MeasuringQuestionComponent = ({
                         $isLoading && "text-muted-foreground",
                     )}
                 >
-                    Result
+                    {legacyText("Result")}
                 </Label>
                 <ToggleGroup
                     className="grow"
@@ -362,10 +367,10 @@ export const MeasuringQuestionComponent = ({
                     disabled={!!$hiderMode || !data.drag || $isLoading}
                 >
                     <ToggleGroupItem value="further">
-                        Hider Further
+                        {legacyText("Hider Further")}
                     </ToggleGroupItem>
                     <ToggleGroupItem value="closer">
-                        Hider Closer
+                        {legacyText("Hider Closer")}
                     </ToggleGroupItem>
                 </ToggleGroup>
             </div>
@@ -392,14 +397,16 @@ const AdminZoneNameDisplay = ({ data }: { data: MeasuringQuestion }) => {
     if (!zoneInfo) {
         return (
             <div className="flex items-center justify-center w-full h-[3rem] text-muted-foreground text-sm">
-                No zone found
+                {legacyText("No zone found")}
             </div>
         );
     }
 
     return (
         <div className="flex flex-col items-center w-full h-[3rem]">
-            <Label className="text-xs text-muted-foreground">Zone</Label>
+            <Label className="text-xs text-muted-foreground">
+                {legacyText("Zone")}
+            </Label>
             <span className="font-medium text-sm truncate max-w-full">
                 {zoneInfo.name}
             </span>

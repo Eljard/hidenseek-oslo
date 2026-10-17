@@ -13,8 +13,8 @@ import { arcDistance } from "@/maps/geo-utils/operators";
 export async function mergeDuplicateStation(
     places: StationPlace[],
     radius: number,
-    units: turf.Units,
-): StationPlace[] {
+    units: Parameters<typeof arcDistance>[2],
+): Promise<StationPlace[]> {
     const grouped = new Map<string, any[]>();
     // 1. Group by name
     for (const place of places) {
@@ -126,8 +126,8 @@ export async function checkIfStationsShareZones(
     station1: Location,
     station2: Location,
     radius: number,
-    units: turf.Units,
-): boolean {
+    units: Parameters<typeof arcDistance>[2],
+): Promise<boolean> {
     // Convert to turf points
     const point1 = turf.point([
         station1.coordinates[0],

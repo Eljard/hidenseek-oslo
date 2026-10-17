@@ -16,7 +16,6 @@ import { EditControl } from "react-leaflet-draw";
 import {
     autoSave,
     drawingQuestionKey,
-    mapGeoJSON,
     polyGeoJSON,
     questionModified,
     questions,
@@ -30,6 +29,8 @@ import type {
     CustomTentacleQuestion,
     Question,
 } from "@/maps/schema";
+import { legacyText } from "@/oslo/legacy-i18n";
+import { applySession, language, osloBounds } from "@/oslo/state";
 
 import { LatitudeLongitude } from "./LatLngPicker";
 import { Dialog, DialogContent } from "./ui/dialog";
@@ -237,6 +238,8 @@ const MeasuringPointMarker = ({
 };
 
 export const PolygonDraw = () => {
+    const $language = useStore(language);
+    const $boundary = useStore(polyGeoJSON);
     const $drawingQuestionKey = useStore(drawingQuestionKey);
     const $questions = useStore(questions);
 
@@ -245,7 +248,9 @@ export const PolygonDraw = () => {
     let question: Question | undefined;
 
     if ($drawingQuestionKey === -1) {
-        L.drawLocal.draw.toolbar.buttons.polygon = "Draw the hiding zone!";
+        L.drawLocal.draw.toolbar.buttons.polygon = legacyText(
+            "Draw the hiding zone!",
+        );
     } else {
         question = $questions.find((q) => q.key === $drawingQuestionKey);
 
@@ -253,12 +258,14 @@ export const PolygonDraw = () => {
             drawingQuestionKey.set(-1);
         }
         if (question?.id === "matching") {
-            L.drawLocal.draw.toolbar.buttons.polygon =
-                "Draw the matching zone(s)!";
+            L.drawLocal.draw.toolbar.buttons.polygon = legacyText(
+                "Draw the matching zone(s)!",
+            );
         }
         if (question?.id === "measuring") {
-            L.drawLocal.draw.toolbar.buttons.polygon =
-                "Draw the measuring zone(s)!";
+            L.drawLocal.draw.toolbar.buttons.polygon = legacyText(
+                "Draw the measuring zone(s)!",
+            );
         }
     }
 
@@ -274,9 +281,22 @@ export const PolygonDraw = () => {
                 geoJSONs,
             ) as FeatureCollection<GeoJSONPolygon | MultiPolygon>;
 
-            mapGeoJSON.set(geoJSON);
-            polyGeoJSON.set(geoJSON);
-            questions.set([]);
+            if (
+                questions.get().length &&
+                !window.confirm(
+                    legacyText("Changing the area clears questions. Continue?"),
+                )
+            ) {
+                restoreBoundary();
+                return;
+            }
+            applySession({
+                version: 1,
+                boundary: (geoJSON.features.length
+                    ? geoJSON
+                    : osloBounds) as any,
+                questions: [],
+            });
             clearCache(CacheType.ZONE_CACHE);
         } else if (
             question?.id === "tentacles" &&
@@ -386,11 +406,38 @@ export const PolygonDraw = () => {
         }
     };
 
-    useEffect(() => {
-        if (featureRef.current && $drawingQuestionKey === -1) {
-            featureRef.current.clearLayers();
-        }
-    }, [$drawingQuestionKey]);
+    const restoreBoundary = () => {
+        if (!featureRef.current || drawingQuestionKey.get() !== -1) return;
+        featureRef.current.clearLayers();
+        const boundary = polyGeoJSON.get();
+        if (boundary)
+            L.geoJSON(boundary, {
+                style: {
+                    color: "#749477",
+                    weight: 1.5,
+                    dashArray: "5 5",
+                    fillOpacity: 0,
+                },
+            }).eachLayer((layer) => featureRef.current.addLayer(layer));
+    };
+    useEffect(restoreBoundary, [$drawingQuestionKey, $boundary]);
+    L.drawLocal.edit.toolbar.buttons.edit = legacyText("Edit area");
+    L.drawLocal.edit.toolbar.buttons.remove = legacyText("Delete area");
+    L.drawLocal.draw.toolbar.actions.title = legacyText("Cancel drawing");
+    L.drawLocal.draw.toolbar.actions.text = legacyText("Cancel");
+    L.drawLocal.draw.toolbar.finish.text = legacyText("Finish");
+    L.drawLocal.draw.toolbar.undo.text = legacyText("Undo last point");
+    L.drawLocal.edit.toolbar.actions.save.text = legacyText("Save");
+    L.drawLocal.edit.toolbar.actions.cancel.text = legacyText("Cancel");
+    L.drawLocal.draw.handlers.polygon.tooltip.start = legacyText(
+        "Click to start drawing",
+    );
+    L.drawLocal.draw.handlers.polygon.tooltip.cont = legacyText(
+        "Click to add a point",
+    );
+    L.drawLocal.draw.handlers.polygon.tooltip.end = legacyText(
+        "Click the first point to finish",
+    );
 
     return (
         <FeatureGroup ref={featureRef}>
@@ -479,6 +526,7 @@ export const PolygonDraw = () => {
                     />
                 ))}
             <EditControl
+                key={$language + ":" + $drawingQuestionKey}
                 position="bottomleft"
                 draw={{
                     rectangle: false,
@@ -504,6 +552,14 @@ export const PolygonDraw = () => {
                 onCreated={onChange}
                 onEdited={onChange}
                 onDeleted={onChange}
+                onDrawStart={() => {
+                    if (drawingQuestionKey.get() === -1)
+                        featureRef.current?.clearLayers();
+                }}
+                onDrawStop={() => {
+                    if (!Object.keys(featureRef.current?._layers || {}).length)
+                        restoreBoundary();
+                }}
             />
         </FeatureGroup>
     );

@@ -1,5 +1,5 @@
 {
-    "name": "Jet Lag Hide and Seek Map Generator",
+    "name": "hidenseek-oslo",
     "type": "module",
     "version": "0.0.1",
     "scripts": {
@@ -8,7 +8,12 @@
         "preview": "astro preview",
         "astro": "astro",
         "lint": "eslint --fix src && prettier . --write",
-        "test": "vitest"
+        "test": "vitest",
+        "data:update": "node scripts/update-transit.mjs",
+        "test:run": "vitest run",
+        "deploy": "pnpm build && wrangler deploy",
+        "lint:check": "eslint src",
+        "typecheck": "tsc --noEmit"
     },
     "dependencies": {
         "@arcgis/core": "^4.32.10",
@@ -81,9 +86,11 @@
         "globals": "^16.0.0",
         "prettier": "3.5.3",
         "typescript-eslint": "^8.24.0",
-        "vitest": "^3.1.4"
+        "vitest": "^3.1.4",
+        "wrangler": "4.92.0"
     },
     "engines": {
         "node": "<25"
-    }
+    },
+    "packageManager": "pnpm@11.25.0"
 }

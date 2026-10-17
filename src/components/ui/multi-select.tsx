@@ -21,6 +21,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useDebounce } from "@/hooks/useDebounce";
 import { cn } from "@/lib/utils";
+import { legacyText } from "@/oslo/legacy-i18n";
 
 /**
  * Variants for the multi-select component to handle different styles.
@@ -251,7 +252,9 @@ export const MultiSelect = React.forwardRef<
                                                         <IconComponent className="h-4 w-4 mr-2" />
                                                     )}
                                                     <span className="max-w-[150px] text-ellipsis overflow-hidden">
-                                                        {option?.label}
+                                                        {legacyText(
+                                                            option?.label,
+                                                        )}
                                                     </span>
                                                     <XCircle
                                                         className="ml-2 h-4 w-4 cursor-pointer"
@@ -321,11 +324,13 @@ export const MultiSelect = React.forwardRef<
                 >
                     <Command>
                         <CommandInput
-                            placeholder="Search..."
+                            placeholder={legacyText("Search...")}
                             onKeyDown={handleInputKeyDown}
                         />
                         <CommandList>
-                            <CommandEmpty>No results found.</CommandEmpty>
+                            <CommandEmpty>
+                                {legacyText("No results found.")}
+                            </CommandEmpty>
                             <CommandGroup>
                                 <CommandItem
                                     key="all"
@@ -343,7 +348,7 @@ export const MultiSelect = React.forwardRef<
                                     >
                                         <CheckIcon className="h-4 w-4" />
                                     </div>
-                                    <span>(Select All)</span>
+                                    <span>{legacyText("(Select All)")}</span>
                                 </CommandItem>
                                 {options.map((option) => {
                                     const isSelected = selectedValues.includes(
@@ -371,9 +376,11 @@ export const MultiSelect = React.forwardRef<
                                                 <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
                                             )}
                                             <span>
-                                                {_optLabelByValue[
-                                                    option.value
-                                                ] || option.label}
+                                                {legacyText(
+                                                    _optLabelByValue[
+                                                        option.value
+                                                    ] || option.label,
+                                                )}
                                             </span>
                                         </CommandItem>
                                     );
@@ -388,7 +395,7 @@ export const MultiSelect = React.forwardRef<
                                                 onSelect={handleClear}
                                                 className="flex-1 justify-center cursor-pointer"
                                             >
-                                                Clear
+                                                {legacyText("Clear")}
                                             </CommandItem>
                                             <Separator
                                                 orientation="vertical"
@@ -400,7 +407,7 @@ export const MultiSelect = React.forwardRef<
                                         onSelect={() => setIsPopoverOpen(false)}
                                         className="flex-1 justify-center cursor-pointer max-w-full"
                                     >
-                                        Close
+                                        {legacyText("Close")}
                                     </CommandItem>
                                 </div>
                             </CommandGroup>

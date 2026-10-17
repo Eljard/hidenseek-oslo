@@ -25,19 +25,19 @@ export const mapGeoLocation = persistentAtom<OpenStreetMap>(
         type: "Feature",
         properties: {
             osm_type: "R",
-            osm_id: 175905,
+            osm_id: 406091,
             osm_key: "place",
             osm_value: "city",
             type: "city",
-            name: "New York",
-            state: "New York",
-            country: "United States",
-            countrycode: "US",
-            extent: [40.91763, -74.258843, 40.476578, -73.700233],
+            name: "Oslo",
+            state: "Oslo",
+            country: "Norge",
+            countrycode: "NO",
+            extent: [60.01, 10.6, 59.84, 10.9],
         },
         geometry: {
             type: "Point",
-            coordinates: [40.7127281, -74.0060152],
+            coordinates: [59.9139, 10.7522],
         },
     },
     {
@@ -88,7 +88,7 @@ export const questionModified = (..._: any[]) => {
 
 export const leafletMapContext = atom<Map | null>(null);
 
-export const defaultUnit = persistentAtom<Units>("defaultUnit", "miles");
+export const defaultUnit = persistentAtom<Units>("defaultUnit", "kilometers");
 export const hiderMode = persistentAtom<
     | false
     | {
@@ -331,12 +331,13 @@ export const planningModeEnabled = persistentAtom<boolean>(
         decode: JSON.parse,
     },
 );
-export const autoZoom = persistentAtom<boolean>("autoZoom", true, {
+export const autoZoom = persistentAtom<boolean>("autoZoom", false, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
 
 export const isLoading = atom<boolean>(false);
+export const calculationError = atom<boolean>(false);
 
 export const baseTileLayer = persistentAtom<
     "voyager" | "light" | "dark" | "transport" | "neighbourhood" | "osmcarto"

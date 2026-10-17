@@ -1,4 +1,5 @@
 import type { Units } from "@/maps/schema";
+import { legacyText } from "@/oslo/legacy-i18n";
 
 import { Select } from "./ui/select";
 
@@ -13,7 +14,7 @@ export const UnitSelect = ({
 }) => {
     return (
         <Select
-            trigger="Unit"
+            trigger={legacyText("Unit")}
             options={{
                 miles: "Miles",
                 kilometers: "Kilometers",

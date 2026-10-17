@@ -5,7 +5,7 @@ import "leaflet-contextmenu";
 import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
 import * as L from "leaflet";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { MapContainer, ScaleControl, TileLayer } from "react-leaflet";
 import { toast } from "react-toastify";
 
@@ -15,6 +15,7 @@ import {
     animateMapMovements,
     autoZoom,
     baseTileLayer,
+    calculationError,
     followMe,
     hiderMode,
     isLoading,
@@ -32,7 +33,7 @@ import {
 import { cn } from "@/lib/utils";
 import { applyQuestionsToMapGeoData, holedMask } from "@/maps";
 import { hiderifyQuestion } from "@/maps";
-import { clearCache, determineMapBoundaries } from "@/maps/api";
+import { BLANK_GEOJSON, clearCache, determineMapBoundaries } from "@/maps/api";
 
 import { DraggableMarkers } from "./DraggableMarkers";
 import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
@@ -122,10 +123,13 @@ export const Map = ({ className }: { className?: string }) => {
     const $baseTileLayer = useStore(baseTileLayer);
     const $thunderforestApiKey = useStore(thunderforestApiKey);
     const $hiderMode = useStore(hiderMode);
-    const $isLoading = useStore(isLoading);
     const $followMe = useStore(followMe);
     const $permanentOverlay = useStore(permanentOverlay);
     const map = useStore(leafletMapContext);
+    const refreshState = useRef({ busy: false, pending: false });
+    const latestRefresh = useRef<(focus?: boolean) => Promise<unknown>>(
+        async () => {},
+    );
 
     const followMeMarkerRef = useMemo(
         () => ({ current: null as L.Marker | null }),
@@ -139,9 +143,15 @@ export const Map = ({ className }: { className?: string }) => {
     const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
 
-        if ($isLoading) return;
+        if (refreshState.current.busy) {
+            refreshState.current.pending = true;
+            return;
+        }
+        refreshState.current.busy = true;
+        const $questions = structuredClone(questions.get());
 
         isLoading.set(true);
+        calculationError.set(false);
 
         if ($questions.length === 0) {
             await clearCache();
@@ -198,7 +208,12 @@ export const Map = ({ className }: { className?: string }) => {
 
             mapGeoData = {
                 type: "FeatureCollection",
-                features: [holedMask(mapGeoData!)!],
+                features: [
+                    mapGeoData?.features?.length === 0
+                        ? (BLANK_GEOJSON
+                              .features[0] as GeoJSON.Feature<GeoJSON.Polygon>)
+                        : holedMask(mapGeoData!)!,
+                ],
             };
 
             map.eachLayer((layer: any) => {
@@ -208,7 +223,14 @@ export const Map = ({ className }: { className?: string }) => {
                 }
             });
 
-            const g = L.geoJSON(mapGeoData);
+            const g = L.geoJSON(mapGeoData, {
+                style: {
+                    color: "#bd5261",
+                    weight: 1,
+                    fillColor: "#203642",
+                    fillOpacity: 0.22,
+                },
+            });
             // @ts-expect-error This is a check such that only this type of layer is removed
             g.eliminationGeoJSON = true;
             g.addTo(map);
@@ -216,7 +238,7 @@ export const Map = ({ className }: { className?: string }) => {
             questionFinishedMapData.set(mapGeoData);
 
             if (autoZoom.get() && focus) {
-                const bbox = turf.bbox(holedMask(mapGeoData) as any);
+                const bbox = turf.bbox(holedMask(mapGeoData!) as any);
                 const bounds = [
                     [bbox[1], bbox[0]],
                     [bbox[3], bbox[2]],
@@ -230,21 +252,28 @@ export const Map = ({ className }: { className?: string }) => {
             }
         } catch (error) {
             console.log(error);
+            calculationError.set(true);
 
             isLoading.set(false);
             if (document.querySelectorAll(".Toastify__toast").length === 0) {
                 return toast.error("No solutions found / error occurred");
             }
         } finally {
+            refreshState.current.busy = false;
             isLoading.set(false);
+            if (refreshState.current.pending) {
+                refreshState.current.pending = false;
+                queueMicrotask(() => latestRefresh.current(false));
+            }
         }
     };
+    latestRefresh.current = refreshQuestions;
 
     const displayMap = useMemo(
         () => (
             <MapContainer
                 center={$mapGeoLocation.geometry.coordinates}
-                zoom={5}
+                zoom={12}
                 className={cn("w-[500px] h-[500px]", className)}
                 ref={leafletMapContext.set}
                 // @ts-expect-error Typing doesn't update from react-contextmenu

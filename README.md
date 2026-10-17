@@ -1,164 +1,81 @@
-# Jet Lag The Game: Hide and Seek Map Generator
+# Hide & Seek Oslo
 
-A tool to trivially generate interactive maps for viewing hiding possibilities in Jet Lag The Game's Hide and Seek. So far, the following questions have been implemented (see https://github.com/taibeled/JetLagHideAndSeek/issues/9 for more):
+A playful, mobile-first Oslo map companion for Jet Lag-style hide and seek.
 
-- Radius
-    - All
-- Thermometer
-    - All
-- Matching
-    - Same occupance of custom zone
-    - Same nearest of custom points
-    - Same zone (i.e., same region or prefecture)
-    - Same first letter of zone
-    - Same nearest commercial airport
-    - Same train line
-    - Same nearest major city
-    - Same length of station's name
-    - Same first letter of train station name
-    - Same nearest park
-    - Same nearest amusement park
-    - Same nearest zoo
-    - Same nearest aquarium
-    - Same nearest golf course
-    - Same nearest mountain
-    - Same nearest museum
-    - Same nearest movie theater
-    - Same nearest hospital
-    - Same nearest library
-    - Same nearest foreign consulate
-- Measuring
-    - Distance to custom points/line/polygon
-    - Distance to coastline
-    - Distance to commercial airport
-    - Distance to major city
-    - Distance to high-speed rail
-    - Distance to rail station
-    - Distance to 7-Eleven
-    - Distance to McDonald's
-    - Distance to park
-    - Distance to amusement park
-    - Distance to zoo
-    - Distance to aquarium
-    - Distance to golf course
-    - Distance to mountain
-    - Distance to museum
-    - Distance to movie theater
-    - Distance to hospital
-    - Distance to library
-    - Distance to foreign consulate
-- Tentacles
-    - Custom locations
-    - Zoo
-    - Aquarium
-    - Amusement Park
-    - Museum
-    - Hospital
-    - Movie theater
-    - Library
+**Live:** https://hidenseek.vedin.workers.dev/
+**Source:** https://github.com/Eljard/hidenseek-oslo
 
-## Contributing
+## Run locally
 
-This project has evolved significantly, encompassing over 10,000 lines of code. Many intricate features have been developed, so therefore contributions are very much welcome. If you find a bug, please either file an issue or create a pull request. Furthermore, enhancements/feature requests are necessary to keep developing this project, so developments of those would also be appreciated. Here is a list of some suggestions for those wanting to help develop this tool:
+Use Node.js 22 or 24 and pnpm 11.25.0.
 
-- [ ] Adding more questions (https://github.com/taibeled/JetLagHideAndSeek/issues/9, https://github.com/taibeled/JetLagHideAndSeek/issues/32, https://github.com/taibeled/JetLagHideAndSeek/issues/34)
-- [ ] Refactoring code
-- [ ] Tests (https://github.com/taibeled/JetLagHideAndSeek/issues/36)
-- [ ] Custom question presets (https://github.com/taibeled/JetLagHideAndSeek/issues/95)
-- [ ] Enable/disable specific bus/train routes (https://github.com/taibeled/JetLagHideAndSeek/issues/65)
-- [ ] Manually define bus/train routes (https://github.com/taibeled/JetLagHideAndSeek/issues/61)
-- [x] Copy coordinates of right-clicked point on map (https://github.com/taibeled/JetLagHideAndSeek/issues/94)
-
-Even if you're not a programmer, you can still help by further documenting the unknown questions.
-
-## Developer Workflow
-
-To develop this website, you need to have [git](https://git-scm.com/downloads), [Node.js](https://nodejs.org/) (version 24 or earlier), and [pnpm](https://pnpm.io/installation) installed. You should then start by cloning this repository and entering the directory:
-
-```bash
-git clone https://github.com/taibeled/JetLagHideAndSeek.git
-cd JetLagHideAndSeek
-```
-
-Next, use `pnpm` to install the dependencies:
-
-```bash
-pnpm install
-```
-
-You can now host the website as you make modifications:
-
-```bash
+```sh
+pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-After making any modifications, please run `pnpm lint` to have your code automatically formatted and errors spotted.
+No application secrets or accounts are required. Copy `.env.example` only if you need a place for local configuration; never commit credentials.
 
-## Contributors
+## Play
 
-A great deal of appreciation goes out to these individuals who have helped to create this tool:
+The app opens on Oslo. **Utforsk / Explore** controls T-bane, tram, bus and train overlays independently. Expand a mode for individual-line filters, click a route badge or map line for details, and enable stops at closer zoom levels. Bus routes appear from zoom 11; stop markers appear from zoom 13. Transport preferences persist locally.
 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/taibeled"><img src="https://avatars.githubusercontent.com/u/179261820?v=4?s=100" width="100px;" alt="taibeled"/><br /><sub><b>taibeled</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3Ataibeled" title="Bug reports">🐛</a> <a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=taibeled" title="Code">💻</a> <a href="#design-taibeled" title="Design">🎨</a> <a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=taibeled" title="Documentation">📖</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/vdumestre"><img src="https://avatars.githubusercontent.com/u/33914769?v=4?s=100" width="100px;" alt="vdumestre"/><br /><sub><b>vdumestre</b></sub></a><br /><a href="#ideas-vdumestre" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/MrYawnie"><img src="https://avatars.githubusercontent.com/u/14262612?v=4?s=100" width="100px;" alt="Jani Andsten"/><br /><sub><b>Jani Andsten</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=MrYawnie" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://bradleyrosenfeld.com/"><img src="https://avatars.githubusercontent.com/u/938452?v=4?s=100" width="100px;" alt="ʙʀᴀᴅʟᴇʏ ʀᴏsᴇɴғᴇʟᴅ"/><br /><sub><b>ʙʀᴀᴅʟᴇʏ ʀᴏsᴇɴғᴇʟᴅ</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=BoringCode" title="Code">💻</a> <a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3ABoringCode" title="Bug reports">🐛</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/abrahamguo"><img src="https://avatars.githubusercontent.com/u/7842684?v=4?s=100" width="100px;" alt="Abraham Guo"/><br /><sub><b>Abraham Guo</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=abrahamguo" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://zusor.io/"><img src="https://avatars.githubusercontent.com/u/23165606?v=4?s=100" width="100px;" alt="Tobias Messner"/><br /><sub><b>Tobias Messner</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=zusorio" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/UnknownSilicon"><img src="https://avatars.githubusercontent.com/u/14339279?v=4?s=100" width="100px;" alt="Eris"/><br /><sub><b>Eris</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=UnknownSilicon" title="Code">💻</a></td>
-    </tr>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/khiral"><img src="https://avatars.githubusercontent.com/u/23667350?v=4?s=100" width="100px;" alt="khiral"/><br /><sub><b>khiral</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=khiral" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/hanneshier"><img src="https://avatars.githubusercontent.com/u/11063798?v=4?s=100" width="100px;" alt="hanneshier"/><br /><sub><b>hanneshier</b></sub></a><br /><a href="#ideas-hanneshier" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/blahajjessie"><img src="https://avatars.githubusercontent.com/u/78718906?v=4?s=100" width="100px;" alt="blahajjessie"/><br /><sub><b>blahajjessie</b></sub></a><br /><a href="#ideas-blahajjessie" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://bagottgames.uk/"><img src="https://avatars.githubusercontent.com/u/88278955?v=4?s=100" width="100px;" alt="Bla0"/><br /><sub><b>Bla0</b></sub></a><br /><a href="#ideas-Blaa00" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://herzog.tech/"><img src="https://avatars.githubusercontent.com/u/5376265?v=4?s=100" width="100px;" alt="Leo"/><br /><sub><b>Leo</b></sub></a><br /><a href="#ideas-leoherzog" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Acclamator"><img src="https://avatars.githubusercontent.com/u/4201849?v=4?s=100" width="100px;" alt="Acclamator"/><br /><sub><b>Acclamator</b></sub></a><br /><a href="#ideas-Acclamator" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/selacey42"><img src="https://avatars.githubusercontent.com/u/200851729?v=4?s=100" width="100px;" alt="selacey42"/><br /><sub><b>selacey42</b></sub></a><br /><a href="#ideas-selacey42" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3Aselacey42" title="Bug reports">🐛</a></td>
-    </tr>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/asemaca"><img src="https://avatars.githubusercontent.com/u/64056714?v=4?s=100" width="100px;" alt="asemaca"/><br /><sub><b>asemaca</b></sub></a><br /><a href="#ideas-asemaca" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3Aasemaca" title="Bug reports">🐛</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Akiva-Cohen"><img src="https://avatars.githubusercontent.com/u/150308530?v=4?s=100" width="100px;" alt="Akiva Cohen"/><br /><sub><b>Akiva Cohen</b></sub></a><br /><a href="#ideas-Akiva-Cohen" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3AAkiva-Cohen" title="Bug reports">🐛</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ChrisHartman"><img src="https://avatars.githubusercontent.com/u/9095854?v=4?s=100" width="100px;" alt="Christopher Robert Hartman"/><br /><sub><b>Christopher Robert Hartman</b></sub></a><br /><a href="#ideas-ChrisHartman" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/miniBill"><img src="https://avatars.githubusercontent.com/u/191825?v=4?s=100" width="100px;" alt="Leonardo Taglialegne"/><br /><sub><b>Leonardo Taglialegne</b></sub></a><br /><a href="#ideas-miniBill" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/JackSouster"><img src="https://avatars.githubusercontent.com/u/96268675?v=4?s=100" width="100px;" alt="JackSouster"/><br /><sub><b>JackSouster</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3AJackSouster" title="Bug reports">🐛</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/fkloft"><img src="https://avatars.githubusercontent.com/u/2741656?v=4?s=100" width="100px;" alt="fkloft"/><br /><sub><b>fkloft</b></sub></a><br /><a href="#ideas-fkloft" title="Ideas, Planning, & Feedback">🤔</a> <a href="#data-fkloft" title="Data">🔣</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/InvestigateXM"><img src="https://avatars.githubusercontent.com/u/52758500?v=4?s=100" width="100px;" alt="InvestigateXM"/><br /><sub><b>InvestigateXM</b></sub></a><br /><a href="#ideas-InvestigateXM" title="Ideas, Planning, & Feedback">🤔</a></td>
-    </tr>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Hawkguye"><img src="https://avatars.githubusercontent.com/u/121480806?v=4?s=100" width="100px;" alt="Hawkguye"/><br /><sub><b>Hawkguye</b></sub></a><br /><a href="#data-Hawkguye" title="Data">🔣</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/jlewis1778"><img src="https://avatars.githubusercontent.com/u/22303191?v=4?s=100" width="100px;" alt="jlewis1778"/><br /><sub><b>jlewis1778</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=jlewis1778" title="Code">💻</a> <a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3Ajlewis1778" title="Bug reports">🐛</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Bert-Moors"><img src="https://avatars.githubusercontent.com/u/89836592?v=4?s=100" width="100px;" alt="Bert-Moors"/><br /><sub><b>Bert-Moors</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=Bert-Moors" title="Code">💻</a> <a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3ABert-Moors" title="Bug reports">🐛</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/azyritedev"><img src="https://avatars.githubusercontent.com/u/206858676?v=4?s=100" width="100px;" alt="azyrite"/><br /><sub><b>azyrite</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=azyritedev" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://metamoof.net/"><img src="https://avatars.githubusercontent.com/u/805751?v=4?s=100" width="100px;" alt="Giles Antonio Radford"/><br /><sub><b>Giles Antonio Radford</b></sub></a><br /><a href="#ideas-metamoof" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/madjayem"><img src="https://avatars.githubusercontent.com/u/71520186?v=4?s=100" width="100px;" alt="madjayem"/><br /><sub><b>madjayem</b></sub></a><br /><a href="#ideas-madjayem" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/palimer6"><img src="https://avatars.githubusercontent.com/u/26436548?v=4?s=100" width="100px;" alt="palimer6"/><br /><sub><b>palimer6</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3Apalimer6" title="Bug reports">🐛</a></td>
-    </tr>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/fahmisack"><img src="https://avatars.githubusercontent.com/u/241826952?v=4?s=100" width="100px;" alt="fahmisack"/><br /><sub><b>fahmisack</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3Afahmisack" title="Bug reports">🐛</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="http://matchatea.dev"><img src="https://avatars.githubusercontent.com/u/46655509?v=4?s=100" width="100px;" alt="Issac Liu"/><br /><sub><b>Issac Liu</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3ACamuise" title="Bug reports">🐛</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/KyleRosenberg"><img src="https://avatars.githubusercontent.com/u/5465361?v=4?s=100" width="100px;" alt="Kyle"/><br /><sub><b>Kyle</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=KyleRosenberg" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/MoellJ"><img src="https://avatars.githubusercontent.com/u/42173084?v=4?s=100" width="100px;" alt="Jannik Möll"/><br /><sub><b>Jannik Möll</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=MoellJ" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Dew2118"><img src="https://avatars.githubusercontent.com/u/50415635?v=4?s=100" width="100px;" alt="Dew2118"/><br /><sub><b>Dew2118</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=Dew2118" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="http://mkuran.pl"><img src="https://avatars.githubusercontent.com/u/16469272?v=4?s=100" width="100px;" alt="Mikołaj Kuranowski"/><br /><sub><b>Mikołaj Kuranowski</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=MKuranowski" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://brasswillow.pl"><img src="https://avatars.githubusercontent.com/u/1677760?v=4?s=100" width="100px;" alt="Marek Hobler"/><br /><sub><b>Marek Hobler</b></sub></a><br /><a href="#ideas-neutrinus" title="Ideas, Planning, & Feedback">🤔</a></td>
-    </tr>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://rso.pt"><img src="https://avatars.githubusercontent.com/u/56204853?v=4?s=100" width="100px;" alt="Rafael Oliveira"/><br /><sub><b>Rafael Oliveira</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=RafDevX" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/matejdro"><img src="https://avatars.githubusercontent.com/u/507922?v=4?s=100" width="100px;" alt="Matej Drobnič"/><br /><sub><b>Matej Drobnič</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=matejdro" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://www.youtube.com/@LeagueOfPoro"><img src="https://avatars.githubusercontent.com/u/95635582?v=4?s=100" width="100px;" alt="League of Poro"/><br /><sub><b>League of Poro</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=LeagueOfPoro" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Whitebrim"><img src="https://avatars.githubusercontent.com/u/23287829?v=4?s=100" width="100px;" alt="Whitebrim"/><br /><sub><b>Whitebrim</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=Whitebrim" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/IchordeDionysos"><img src="https://avatars.githubusercontent.com/u/10195482?v=4?s=100" width="100px;" alt="Dennis Kugelmann"/><br /><sub><b>Dennis Kugelmann</b></sub></a><br /><a href="#ideas-IchordeDionysos" title="Ideas, Planning, & Feedback">🤔</a> <a href="#design-IchordeDionysos" title="Design">🎨</a></td>
-    </tr>
-  </tbody>
-</table>
+**Spillet / The game** contains radius, thermometer, matching, measuring and tentacle questions. Questions default to the map center. Edit answers and coordinates, or drag the corresponding map markers. Questions retain the upstream engine and supported variants. The advanced hiding-zone panel supports station-based questions and custom station lists.
 
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
+The Oslo preset is an urban-area rectangle (10.60–10.90 E, 59.84–60.01 N), not Oslo's municipal boundary or Ruter ticket zone. Draw or edit a boundary using the lower-left map controls. Boundary changes clear questions after confirmation. Undo/redo covers question edits, imports and boundary changes during the current page session.
 
-<!-- ALL-CONTRIBUTORS-LIST:END -->
+Questions and boundaries autosave in this browser. Export/import shares these two elements as versioned JSON; transport preferences and advanced station preferences stay local. A separate private hider location and credentials are never exported. Exports can still contain the question locations you chose.
+
+## Transport data and coverage
+
+The included **17 October 2026** snapshot contains **289 routes and 2,308 stops** in the Oslo region: 5 metro, 6 tram, 256 bus and 22 rail routes. The geographic extent is 10.35–11.15 E, 59.70–60.15 N. Route variants may extend just beyond the edge to preserve continuity. Counts reflect the feed, including replacement and limited-service variants; this is a static network map, not a timetable or a statement that every route operates today.
+
+- Source: [Entur Journey Planner v3](https://developer.entur.no/), including Ruter and rail operators outside Ruter.
+- Reference: [Ruter's official network maps](https://ruter.no/planlegg-reise/rutetabeller-og-linjekart).
+- License: [Norwegian Licence for Open Government Data (NLOD), via Entur](https://developer.entur.no/terms-of-service).
+- Route colors come from Entur's `presentation.colour`. The fallback palette is metro orange `#e47716`, tram blue `#208ab0`, bus red `#c84453`, rail green `#358560`. Official colors sometimes identify a mode rather than a unique line; selection and route numbers distinguish lines.
+- Route geometry is decoded from `journeyPatterns.pointsOnLink`, clipped to this region, and simplified with a 0.00005-degree tolerance (roughly a few meters in Oslo). No route geometry is invented.
+- **Partial coverage:** 59 patterns with missing or sparse geometry are omitted. In particular, Flytoget and some international train routes provide only station-to-station links. These are not drawn as track geometry. Rail gaps over 750 meters in the original geometry are split rather than bridged. The app shows a coverage note.
+- Stops are grouped by Entur stop-place ID; marker positions use an available quay in that stop place. Detail lists contain the union of stops across retained variants, not a guaranteed stop order or single departure pattern.
+- The current snapshot is about 4.3 MB uncompressed. It is fetched once, cached by the browser/CDN, and rendered on a separate Leaflet Canvas layer. Visitors do not fetch Norway's national feed.
+
+### Refresh the snapshot
+
+```sh
+pnpm data:update
+pnpm test:run
+pnpm build
+pnpm deploy
+```
+
+The script identifies itself as `eljard-hidenseek-oslo` using Entur's required `ET-Client-Name` header, retries failed requests, and replaces the snapshot atomically only after all four modes are present. Review changed coverage/counts before publishing. Refresh before a game and when Ruter changes routes; there is no unattended refresh schedule.
+
+Place search uses Entur's public geocoder with local stop-search fallback. Base tiles are CARTO/OpenStreetMap; their attribution remains visible. Advanced questions use the upstream OpenStreetMap/Overpass sources and ArcGIS geodesic operators. Their source coverage may differ from the displayed transit overlay, and network access is required. Failed spatial calculations are shown explicitly.
+
+## Checks
+
+```sh
+pnpm lint:check
+pnpm typecheck
+pnpm test:run
+pnpm build
+```
+
+The suite includes upstream tests and Oslo spatial, import/export, undo/redo, filtering, data-quality and failed-load checks. The Node test setup runs the actual ArcGIS WASM engine from the installed package.
+
+## Deploy to Cloudflare
+
+This is a separate Cloudflare Workers static-assets application named **hidenseek**, following the existing navigation app's Cloudflare account setup. It has no bindings to the navigation app and uses no runtime secrets.
+
+```sh
+pnpm exec wrangler login
+pnpm deploy
+```
+
+`wrangler.jsonc` selects the account and `hidenseek` Worker. Wrangler should return `https://hidenseek.vedin.workers.dev/`; verify this output and the deployed app before announcing a release. Account IDs in configuration are not secrets. Local OAuth files and `.wrangler` state are ignored.
+
+GitHub Actions runs the checks on pushes and pull requests. A manual workflow can also deploy when a repository secret named `CLOUDFLARE_API_TOKEN` is configured for this account with Worker deployment access. The local OAuth login is not uploaded to GitHub.
+
+## Attribution
+
+An unofficial fan project; not affiliated with Jet Lag: The Game, Ruter, Entur or the transit operators. Based on [taibeled/JetLagHideAndSeek](https://github.com/taibeled/JetLagHideAndSeek), MIT, copyright 2025 taibeled. The original [LICENSE](LICENSE) is retained; the upstream README is in [docs/UPSTREAM_README.md](docs/UPSTREAM_README.md). Third-party dependencies retain their own licenses.
