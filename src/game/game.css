@@ -1,0 +1,754 @@
+.room-entry h1,
+.active-room h1 {
+    font-size: 25px;
+    line-height: 1.2;
+    letter-spacing: -0.6px;
+    margin: 0 0 18px;
+    color: var(--ink);
+}
+.room-subtabs {
+    display: flex;
+    gap: 4px;
+    background: #edede5;
+    border-radius: 9px;
+    padding: 4px;
+    margin: 0 0 18px;
+    flex-wrap: wrap;
+}
+.room-subtabs button {
+    border: 0;
+    background: none;
+    border-radius: 6px;
+    flex: 1;
+    font-size: 11px;
+    padding: 9px 6px;
+    white-space: nowrap;
+    color: #51685c;
+}
+.room-subtabs button[aria-pressed="true"] {
+    background: #fffdf7;
+    box-shadow: 0 1px 4px #1b392313;
+    color: #1c303d;
+    font-weight: 600;
+}
+.room-entry form,
+.room-setup,
+.question-form,
+.add-card-form {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+.room-entry .field,
+.room-setup .field,
+.question-form .field,
+.pending-question .field,
+.add-card-form .field {
+    font-size: 11px;
+    margin: 0;
+    color: #526456;
+    gap: 6px;
+}
+.room-entry input,
+.room-entry textarea,
+.room-setup input,
+.room-setup textarea,
+.room-setup select,
+.question-form input,
+.question-form select,
+.question-form textarea,
+.pending-question textarea,
+.add-card-form input,
+.add-card-form textarea,
+.add-card-form select,
+.private-notes {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid #d5dbcd;
+    border-radius: 7px;
+    background: #fffdf7;
+    color: var(--ink);
+    font: inherit;
+    padding: 10px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+.room-entry textarea,
+.room-setup textarea,
+.question-form textarea,
+.pending-question textarea,
+.add-card-form textarea,
+.private-notes {
+    resize: vertical;
+    min-height: 65px;
+}
+.room-footnote,
+.pin-coordinates {
+    font-size: 11px;
+    line-height: 1.6;
+    color: #62725f;
+    margin: 14px 0;
+}
+.full {
+    width: 100%;
+}
+.room-entry .primary-button,
+.active-room .primary-button,
+.room-setup .secondary-button {
+    min-height: 42px;
+    font-size: 12px !important;
+}
+.room-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+}
+.room-heading h1 {
+    margin-bottom: 9px;
+    overflow-wrap: anywhere;
+}
+.connection-status {
+    width: 7px;
+    height: 7px;
+    background: #c59537;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.connection-status.live {
+    background: #3f805f;
+}
+.connection-status.offline {
+    background: #b94c55;
+}
+.room-identity {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    margin-bottom: 17px;
+}
+.room-identity > span {
+    border-left: 3px solid;
+    padding-left: 7px;
+}
+.room-identity > b {
+    font-size: 10px;
+    font-weight: 500;
+    color: #657560;
+}
+.round-clock {
+    padding: 15px 16px;
+    background: #efefdf;
+    border: 1px solid #e0e4d2;
+    border-radius: 11px;
+    margin-bottom: 12px;
+}
+.round-clock > span {
+    display: block;
+    font-size: 11px;
+    color: #56705b;
+}
+.round-clock > strong {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 32px;
+    letter-spacing: -1px;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+}
+.round-clock small {
+    display: block;
+    font-size: 10px;
+    color: #62745f;
+}
+.room-quick-actions {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 18px;
+}
+.room-quick-actions button {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    background: #fffdf6;
+    border: 1px solid #dce1d3;
+    border-radius: 7px;
+    padding: 10px 8px;
+    font-size: 11px;
+    min-height: 38px;
+}
+.room-quick-actions button:last-child {
+    margin-left: auto;
+}
+.room-quick-actions button[aria-pressed="true"] {
+    background: #e4eede;
+    border-color: #b6c7ac;
+}
+.room-error {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #963d43;
+    background: #fbebe5;
+    padding: 10px;
+    border-radius: 7px;
+    margin: 8px 0 12px;
+}
+.room-name {
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    margin: 0;
+}
+.boundary-options {
+    border-top: 1px solid #e0e4d5;
+    padding-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+.boundary-options span {
+    font-size: 11px;
+    flex-basis: 100%;
+    margin-bottom: 2px;
+}
+.boundary-options button {
+    border: 1px solid #d8dfcf;
+    border-radius: 6px;
+    font-size: 11px;
+    padding: 8px;
+    background: #fffdf6;
+}
+.start-round {
+    margin-top: 10px;
+    gap: 8px;
+}
+.map-draft-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 8px;
+    align-items: center;
+    font-size: 11px;
+}
+.map-draft-actions p {
+    flex-basis: 100%;
+    margin: 4px 0;
+}
+.question-workspace h2 {
+    font-size: 18px;
+    letter-spacing: -0.3px;
+    margin: 10px 0;
+}
+.question-status {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    font-size: 10px;
+    color: #66775f;
+}
+.question-status b {
+    font-variant-numeric: tabular-nums;
+    color: #735332;
+    font-size: 12px;
+}
+.pending-question {
+    background: #fffdf6;
+    border: 1px solid #d7dfcc;
+    border-left: 3px solid #678467;
+    padding: 14px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+}
+.pending-question > p {
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 10px 0;
+    color: #465f4b;
+}
+.pending-question > small {
+    font-size: 11px;
+    color: #66775f;
+}
+.pending-question .primary-button {
+    margin-top: 12px;
+}
+.answer-options {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 14px 0 10px;
+}
+.answer-options button {
+    flex: 1;
+    padding: 10px 7px;
+    border: 1px solid #d2dcc8;
+    border-radius: 7px;
+    background: #f7f7ed;
+    font-size: 12px;
+}
+.answer-options button[aria-pressed="true"] {
+    background: #dce9d2;
+    border-color: #789971;
+}
+.text-button {
+    border: 0;
+    background: none;
+    font-size: 11px;
+    padding: 10px 0;
+    color: #7c4f4a !important;
+}
+.journey-end {
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+    margin-top: 15px;
+}
+.question-cost {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 7px;
+    font-size: 10px;
+    color: #5a705b;
+    margin: 3px 0;
+}
+.question-cost label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.question-cost input {
+    width: 43px;
+    padding: 6px;
+    font-size: 11px;
+}
+.question-cost > span {
+    white-space: nowrap;
+}
+.room-empty {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #66775e;
+    margin: 20px 0;
+    padding: 18px 0;
+}
+.question-history article {
+    margin-top: 12px;
+    padding: 13px;
+    background: #fffdf7;
+    border: 1px solid #e0e3d7;
+    border-radius: 9px;
+}
+.history-category {
+    font-size: 9px;
+    display: flex;
+    justify-content: space-between;
+    color: #65795f;
+}
+.history-category time {
+    font-variant-numeric: tabular-nums;
+}
+.question-history h3 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 15px;
+    line-height: 1.4;
+    margin: 9px 0 7px;
+}
+.history-answer {
+    font-size: 13px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    margin: 8px 0;
+    color: #234531;
+}
+.draw-reward {
+    font-size: 11px;
+    color: #645535;
+    background: #f7edc9;
+    border-radius: 6px;
+    padding: 9px;
+    margin: 11px 0 0;
+}
+.photo-upload {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    border: 1px dashed #adc4a0;
+    padding: 11px;
+    border-radius: 6px;
+    margin-top: 12px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.photo-upload input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+}
+.evidence-image {
+    display: block;
+    width: 100%;
+    max-height: 250px;
+    object-fit: contain;
+    border-radius: 7px;
+    margin-top: 10px;
+    background: #efefdf;
+}
+.compact-details {
+    border-top: 1px solid #dfe3d4;
+    margin-top: 17px;
+    padding-top: 13px;
+    font-size: 12px;
+}
+.compact-details summary {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    list-style: none;
+    color: #536a51;
+}
+.compact-details summary:after {
+    content: "⌄";
+    margin-left: auto;
+}
+.compact-details[open] summary {
+    margin-bottom: 13px;
+}
+.compact-details > p {
+    font-size: 11px;
+    line-height: 1.6;
+}
+.member-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 11px;
+    padding: 6px 0;
+    margin: 0;
+}
+.member-row small {
+    font-size: 10px;
+    color: #61725d;
+}
+.member-row button {
+    border: 0;
+    background: none;
+    padding: 6px;
+    color: #6a7f61;
+}
+.room-activity {
+    padding: 0;
+    list-style: none;
+    margin: 0;
+}
+.room-activity li {
+    font-size: 11px;
+    padding: 6px 0;
+    display: flex;
+    gap: 10px;
+}
+.room-activity time {
+    font-size: 10px;
+    color: #67765d;
+    white-space: nowrap;
+}
+.round-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+.round-actions button {
+    flex: 1;
+    gap: 5px;
+}
+.active-curse {
+    border: 1px solid #d8bddb;
+    border-radius: 9px;
+    background: #f6edf4;
+    padding: 12px;
+    margin-bottom: 14px;
+}
+.active-curse strong {
+    font-size: 13px;
+}
+.active-curse p {
+    font-size: 11px;
+    line-height: 1.5;
+}
+.active-curse span {
+    display: block;
+    font-size: 10px;
+    color: #7d5982;
+}
+.active-curse button {
+    margin-top: 9px;
+    border: 1px solid #c3a7c5;
+    background: #fff9fb;
+    border-radius: 6px;
+    padding: 7px 10px;
+    font-size: 11px;
+}
+.hand-summary {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    padding: 4px 0 11px;
+}
+.hand-card {
+    background: #fffdf7;
+    border: 1px solid #dfdfd2;
+    border-radius: 10px;
+    padding: 14px;
+    margin: 12px 0;
+}
+.hand-card.curse {
+    border-top: 3px solid #9c76a2;
+}
+.hand-card.time {
+    border-top: 3px solid #caa942;
+}
+.hand-card.powerup {
+    border-top: 3px solid #6f9b8b;
+}
+.hand-card > span {
+    font-size: 10px;
+    color: #6d795f;
+}
+.hand-card h3 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 16px;
+    margin: 9px 0;
+}
+.hand-card p {
+    font-size: 12px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+}
+.hand-card > strong {
+    display: block;
+    font-size: 23px;
+    font-family: "Space Grotesk", sans-serif;
+    color: #8a682c;
+}
+.hand-card > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 13px;
+}
+.add-card-form {
+    margin-top: 15px;
+    padding: 14px;
+    border: 1px solid #dce1d2;
+    border-radius: 8px;
+}
+.private-notes {
+    margin-bottom: 9px;
+}
+.room-scoreboard h2 {
+    font-size: 15px;
+    margin: 4px 0 15px;
+}
+.score-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #e0e4d6;
+    padding: 13px 0;
+    font-size: 12px;
+}
+.score-row > span {
+    font-size: 10px;
+    color: #758467;
+}
+.score-row > b {
+    flex: 1;
+}
+.score-row strong {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 17px;
+    font-variant-numeric: tabular-nums;
+}
+.map-note-actions {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+.location-sharing {
+    margin: 15px 0;
+}
+.location-sharing p {
+    margin: 5px 0;
+}
+.room-map-instructions {
+    position: absolute;
+    z-index: 960;
+    top: 85px;
+    left: 25px;
+    right: 85px;
+    max-width: 440px;
+    background: #fffdf7;
+    border: 1px solid #cbd9bd;
+    box-shadow: 0 3px 12px #253c3c12;
+    border-radius: 9px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+}
+.room-map-instructions span {
+    flex: 1;
+}
+.room-map-instructions button {
+    border: 1px solid #d1dbc7;
+    background: #f4f3e5;
+    border-radius: 5px;
+    padding: 8px;
+    font-size: 11px;
+}
+.choosing-pin {
+    cursor: crosshair !important;
+}
+.brand-city {
+    font-size: 12px;
+    letter-spacing: 0;
+    margin-top: 5px;
+    font-weight: 500;
+}
+.language-button {
+    font-size: 10px !important;
+    letter-spacing: 0;
+    padding: 8px;
+}
+.location-pill {
+    letter-spacing: 0;
+    font-size: 12px;
+}
+.location-pill .pill-divider {
+    display: none;
+}
+.location-pill {
+    min-width: auto;
+}
+.data-note {
+    font-size: 10px;
+    margin-top: 20px;
+    line-height: 1.7;
+}
+.data-note summary {
+    font-size: 11px;
+    cursor: pointer;
+}
+.data-note > div {
+    padding-top: 9px;
+}
+.panel-heading:first-child {
+    margin-top: 0;
+}
+.legend-title {
+    letter-spacing: 0;
+    font-size: 9px;
+}
+.section-eyebrow {
+    letter-spacing: 0;
+    text-transform: none;
+}
+.brand {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.panel-scroll {
+    padding-top: 22px;
+}
+.panel-tabs {
+    margin-top: 16px;
+}
+.check-label {
+    min-height: 25px;
+}
+.check-label input {
+    flex-shrink: 0;
+}
+.room-rules {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: 12px;
+}
+@media (max-width: 700px) {
+    .room-entry h1,
+    .active-room h1 {
+        font-size: 22px;
+    }
+    .room-map-instructions {
+        top: 133px;
+        left: 15px;
+        right: 60px;
+        font-size: 11px;
+        flex-wrap: wrap;
+        padding: 9px;
+    }
+    .room-map-instructions span {
+        flex-basis: 100%;
+    }
+    .room-quick-actions button {
+        min-height: 42px;
+    }
+    .room-subtabs button {
+        padding: 11px 5px;
+        font-size: 12px;
+    }
+    .room-entry input,
+    .room-entry textarea,
+    .room-setup input,
+    .room-setup select,
+    .room-setup textarea,
+    .question-form input,
+    .question-form textarea,
+    .question-form select,
+    .pending-question textarea,
+    .add-card-form input,
+    .add-card-form select,
+    .add-card-form textarea {
+        font-size: 16px;
+    }
+    .question-cost input {
+        font-size: 13px;
+    }
+    .brand-city {
+        font-size: 10px;
+        letter-spacing: 0;
+    }
+    .panel-scroll {
+        padding-top: 15px;
+    }
+    .room-identity {
+        font-size: 12px;
+    }
+    .round-clock {
+        padding: 11px 14px;
+    }
+    .round-clock > strong {
+        font-size: 30px;
+    }
+    .answer-options button {
+        min-height: 44px;
+    }
+    .field {
+        font-size: 11px;
+    }
+    .question-types {
+        display: none;
+    }
+}

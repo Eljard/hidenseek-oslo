@@ -338,6 +338,7 @@ export const autoZoom = persistentAtom<boolean>("autoZoom", false, {
 
 export const isLoading = atom<boolean>(false);
 export const calculationError = atom<boolean>(false);
+export const multiplayerActive = atom<boolean>(false);
 
 export const baseTileLayer = persistentAtom<
     "voyager" | "light" | "dark" | "transport" | "neighbourhood" | "osmcarto"

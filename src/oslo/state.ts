@@ -183,7 +183,7 @@ export function lineVisible(line: TransitLine, prefs = transitPrefs.get()) {
 export async function loadTransit() {
     transitError.set(false);
     try {
-        const r = await fetch("/data/oslo-transit.json");
+        const r = await fetch("/data/oslo-transit.json?v=20261017-ruter");
         if (!r.ok) throw Error("Snapshot unavailable");
         const data = await r.json();
         if (

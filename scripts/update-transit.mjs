@@ -1,6 +1,7 @@
 /** Official Entur geographic shapes; no schematic or invented geometry. */
 import { mkdir, writeFile, rename } from "node:fs/promises";
 import { simplify, lineString, distance } from "@turf/turf";
+import { lineColour, modeColours as colors } from "../src/transit/colours.mjs";
 const endpoint = "https://api.entur.io/journey-planner/v3/graphql";
 const bounds = [10.35, 59.7, 11.15, 60.15];
 const inside = ([lng, lat]) =>
@@ -8,12 +9,6 @@ const inside = ([lng, lat]) =>
     lng <= bounds[2] &&
     lat >= bounds[1] &&
     lat <= bounds[3];
-const colors = {
-    metro: "#e47716",
-    tram: "#208ab0",
-    bus: "#c84453",
-    rail: "#358560",
-};
 async function query(query, variables = {}) {
     for (let attempt = 0; attempt < 3; attempt++) {
         try {
@@ -155,10 +150,7 @@ async function main() {
                 code: line.publicCode || line.id,
                 name: line.name,
                 mode: line.transportMode,
-                color: /^[0-9a-f]{6}$/i.test(official || "")
-                    ? `#${official}`
-                    : colors[line.transportMode],
-                colorSource: official ? "Entur" : "mode fallback",
+                ...lineColour(line.transportMode, line.publicCode, official),
                 destinations: [...destinations],
                 stopIds: [...stopIds],
                 geometry: { type: "MultiLineString", coordinates: segments },

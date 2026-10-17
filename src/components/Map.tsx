@@ -22,6 +22,7 @@ import {
     leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
+    multiplayerActive,
     permanentOverlay,
     planningModeEnabled,
     polyGeoJSON,
@@ -126,6 +127,7 @@ export const Map = ({ className }: { className?: string }) => {
     const $followMe = useStore(followMe);
     const $permanentOverlay = useStore(permanentOverlay);
     const map = useStore(leafletMapContext);
+    const $multiplayer = useStore(multiplayerActive);
     const refreshState = useRef({ busy: false, pending: false });
     const latestRefresh = useRef<(focus?: boolean) => Promise<unknown>>(
         async () => {},
@@ -141,7 +143,7 @@ export const Map = ({ className }: { className?: string }) => {
     );
 
     const refreshQuestions = async (focus: boolean = false) => {
-        if (!map) return;
+        if (!map || multiplayerActive.get()) return;
 
         if (refreshState.current.busy) {
             refreshState.current.pending = true;
@@ -205,6 +207,7 @@ export const Map = ({ className }: { className?: string }) => {
                     geoJSONPlane.addTo(map);
                 },
             );
+            if (multiplayerActive.get()) return;
 
             mapGeoData = {
                 type: "FeatureCollection",
@@ -277,7 +280,7 @@ export const Map = ({ className }: { className?: string }) => {
                 className={cn("w-[500px] h-[500px]", className)}
                 ref={leafletMapContext.set}
                 // @ts-expect-error Typing doesn't update from react-contextmenu
-                contextmenu={true}
+                contextmenu={!$multiplayer}
                 contextmenuWidth={140}
                 contextmenuItems={[
                     {
@@ -398,13 +401,13 @@ export const Map = ({ className }: { className?: string }) => {
                 ]}
             >
                 {getTileLayer($baseTileLayer, $thunderforestApiKey)}
-                <DraggableMarkers />
+                {!$multiplayer && <DraggableMarkers />}
                 <div className="leaflet-top leaflet-right">
                     <div className="leaflet-control flex-col flex gap-2">
                         <LeafletFullScreenButton />
                     </div>
                 </div>
-                <PolygonDraw />
+                {!$multiplayer && <PolygonDraw />}
                 <ScaleControl position="bottomleft" />
                 <MapPrint
                     position="topright"
@@ -420,14 +423,21 @@ export const Map = ({ className }: { className?: string }) => {
                 />
             </MapContainer>
         ),
-        [map, $baseTileLayer, $thunderforestApiKey],
+        [map, $baseTileLayer, $thunderforestApiKey, $multiplayer],
     );
 
     useEffect(() => {
         if (!map) return;
-
+        if ($multiplayer) {
+            map.eachLayer((layer: any) => {
+                if (layer.eliminationGeoJSON || layer.questionKey !== undefined)
+                    map.removeLayer(layer);
+            });
+            questionFinishedMapData.set(null);
+            return;
+        }
         refreshQuestions(true);
-    }, [$questions, map, $hiderMode]);
+    }, [$questions, map, $hiderMode, $multiplayer]);
 
     useEffect(() => {
         const intervalId = setInterval(async () => {
@@ -474,7 +484,7 @@ export const Map = ({ className }: { className?: string }) => {
 
     useEffect(() => {
         if (!map) return;
-        if (!$followMe) {
+        if (!$followMe || $multiplayer) {
             if (followMeMarkerRef.current) {
                 map.removeLayer(followMeMarkerRef.current);
                 followMeMarkerRef.current = null;
@@ -520,7 +530,7 @@ export const Map = ({ className }: { className?: string }) => {
                 geoWatchIdRef.current = null;
             }
         };
-    }, [$followMe, map]);
+    }, [$followMe, map, $multiplayer]);
 
     useEffect(() => {
         if (!map) return;

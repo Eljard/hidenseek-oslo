@@ -2,77 +2,48 @@ import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
 import * as L from "leaflet";
 import {
-    ArrowDownToLine,
-    ArrowUpFromLine,
     ArrowUpRight,
     BusFront,
-    Check,
     ChevronDown,
     ChevronRight,
     CircleHelp,
     Compass,
-    Flag,
     Layers,
     LocateFixed,
     MapPin,
     Plus,
-    Radio,
-    Redo2,
     Route,
     Search,
     SlidersHorizontal,
-    Sparkles,
     Target,
     TrainFront,
     TramFront,
-    Trash2,
-    Undo2,
     X,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import { Map } from "@/components/Map";
+import { connectRoom, credentials, leaveRoom, room } from "@/game/client";
+import { RoomMap } from "@/game/RoomMap";
+import { RoomPanel } from "@/game/RoomPanel";
 import {
-    MatchingQuestionComponent,
-    MeasuringQuestionComponent,
-    TentacleQuestionComponent,
-} from "@/components/QuestionCards";
-import {
-    SidebarContext as ZoneContext,
-    SidebarProvider as ZoneProvider,
-} from "@/components/ui/sidebar-r";
-import { ZoneSidebar } from "@/components/ZoneSidebar";
-import {
-    addQuestion,
-    calculationError,
-    drawingQuestionKey,
     hiderMode,
-    isLoading,
     leafletMapContext,
     mapGeoJSON,
+    multiplayerActive,
     polyGeoJSON,
-    questionFinishedMapData,
-    questionModified,
-    questions,
 } from "@/lib/context";
-import { holedMask } from "@/maps";
-import type { Question } from "@/maps/schema";
+import { modeColours } from "@/transit/colours.mjs";
 
 import { useText } from "./i18n";
 import {
-    applySession,
-    exportSession,
-    historyState,
     language,
     lineVisible,
     loadTransit,
     type Mode,
     osloBounds,
-    parseSession,
     selectedLine,
-    startHistory,
-    stepHistory,
     transitData,
     transitError,
     transitPrefs,
@@ -85,22 +56,28 @@ const modeInfo = {
         nb: "T-bane",
         en: "Metro",
         icon: TrainFront,
-        color: "#df7924",
+        color: modeColours.metro,
         tag: "T",
     },
     tram: {
         nb: "Trikk",
         en: "Tram",
         icon: TramFront,
-        color: "#228bb0",
+        color: modeColours.tram,
         tag: "TR",
     },
-    bus: { nb: "Buss", en: "Bus", icon: BusFront, color: "#c74756", tag: "B" },
+    bus: {
+        nb: "Buss",
+        en: "Bus",
+        icon: BusFront,
+        color: modeColours.bus,
+        tag: "B",
+    },
     rail: {
         nb: "Tog",
         en: "Train",
         icon: TrainFront,
-        color: "#34865c",
+        color: modeColours.rail,
         tag: "R",
     },
 };
@@ -131,21 +108,6 @@ function NetworkPanel() {
         transitPrefs.set({ ...prefs, ...patch });
     return (
         <>
-            <div className="section-eyebrow">
-                <span className="status-dot" />
-                {t("DITT NESTE TREKK", "YOUR NEXT MOVE")}
-            </div>
-            <h1>
-                {t("Hele byen.", "The whole city.")}
-                <br />
-                <span>{t("Ett stort spill.", "One big game.")}</span>
-            </h1>
-            <p className="intro">
-                {t(
-                    "Følg linjene. Finn nye spor. Gjør Oslo til spillebrettet ditt.",
-                    "Follow the lines. Find your next clue. Make Oslo your playing field.",
-                )}
-            </p>
             <div className="panel-heading">
                 <h2>{t("Kollektivnettet", "Transit network")}</h2>
                 <Layers size={17} />
@@ -415,20 +377,7 @@ function NetworkPanel() {
                     </span>
                 </label>
             </div>
-            <div className="tip-card">
-                <Compass size={23} />
-                <div>
-                    <strong>
-                        {t("Et lite forsprang", "A little head start")}
-                    </strong>
-                    <p>
-                        {t(
-                            "Trykk på en linje for å utforske ruten og holdeplassene.",
-                            "Tap a line to explore its route and stops.",
-                        )}
-                    </p>
-                </div>
-            </div>
+
             {error ? (
                 <div className="error-note" role="alert">
                     {t(
@@ -444,595 +393,53 @@ function NetworkPanel() {
                     {t("Henter kollektivnettet…", "Loading transit network…")}
                 </p>
             ) : (
-                <p className="data-note">
-                    {t(
-                        "Nettverkskart, ikke sanntid.",
-                        "Network map, not live service.",
-                    )}{" "}
-                    {data.omittedPatterns > 0 && (
-                        <span className="coverage-note">
-                            {t(
-                                "Noen avganger mangler nøyaktig geometri og er utelatt, blant annet Flytoget.",
-                                "Some services lack accurate geometry and are omitted, including Flytoget.",
-                            )}
-                        </span>
-                    )}
-                    <br />
-                    {t("Datert", "Snapshot")}{" "}
-                    {new Date(data.fetchedAt).toLocaleDateString(
-                        t("nb-NO", "en-GB"),
-                    )}{" "}
-                    ·{" "}
-                    <a
-                        href="https://developer.entur.no/terms-of-service"
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        Entur / NLOD
-                    </a>
-                    <br />
-                    <a
-                        href="https://ruter.no/planlegg-reise/rutetabeller-og-linjekart"
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        {t(
-                            "Se Ruters offisielle linjekart",
-                            "Ruter official network maps",
-                        )}{" "}
-                        ↗
-                    </a>
-                </p>
-            )}
-        </>
-    );
-}
-
-const questionInfo = {
-    radius: {
-        nb: "Radius",
-        en: "Radius",
-        icon: Target,
-        description: [
-            "Er gjemmestedet innenfor en avstand?",
-            "Is the hiding spot within a distance?",
-        ],
-    },
-    thermometer: {
-        nb: "Varmere / kaldere",
-        en: "Warmer / colder",
-        icon: Radio,
-        description: [
-            "Kom du nærmere mellom to punkter?",
-            "Did you get closer between two points?",
-        ],
-    },
-    matching: {
-        nb: "Sammenligning",
-        en: "Matching",
-        icon: Layers,
-        description: [
-            "Har dere samme nærmeste sted eller område?",
-            "Do you share a nearest place or area?",
-        ],
-    },
-    measuring: {
-        nb: "Avstand",
-        en: "Measuring",
-        icon: Route,
-        description: [
-            "Hvem er nærmest et bestemt sted?",
-            "Who is closer to a particular place?",
-        ],
-    },
-    tentacles: {
-        nb: "Tentakler",
-        en: "Tentacles",
-        icon: Compass,
-        description: [
-            "Hvilket sted er nærmest gjemmestedet?",
-            "Which place is closest to the hiding spot?",
-        ],
-    },
-};
-function BasicEditor({ question }: { question: Question }) {
-    const t = useText(),
-        busy = useStore(isLoading);
-    const change = (key: string, value: unknown) => {
-        Object.assign(question.data, { [key]: value });
-        questionModified();
-    };
-    const coord = (key: string, label: string, min: number, max: number) => (
-        <label className="field" key={key}>
-            {label}
-            <input
-                aria-label={label}
-                type="number"
-                min={min}
-                max={max}
-                step="any"
-                value={Number((question.data as any)[key])}
-                disabled={busy}
-                onChange={(e) => {
-                    if (e.target.value !== "" && e.target.validity.valid)
-                        change(key, Number(e.target.value));
-                }}
-            />
-        </label>
-    );
-    if (question.id === "radius")
-        return (
-            <fieldset disabled={busy}>
-                <div className="two-fields">
-                    <label className="field">
-                        {t("Radius (km)", "Radius (km)")}
-                        <input
-                            type="number"
-                            min="0"
-                            max="1000"
-                            step="any"
-                            value={Number(
-                                turf
-                                    .convertLength(
-                                        question.data.radius,
-                                        question.data.unit,
-                                        "kilometers",
-                                    )
-                                    .toFixed(3),
-                            )}
-                            onChange={(e) => {
-                                if (
-                                    e.target.value !== "" &&
-                                    e.target.validity.valid
-                                ) {
-                                    Object.assign(question.data, {
-                                        radius: Number(e.target.value),
-                                        unit: "kilometers",
-                                    });
-                                    questionModified();
-                                }
-                            }}
-                        />
-                    </label>
-                    <label className="field">
-                        {t("Svar", "Answer")}
-                        <select
-                            value={question.data.within ? "yes" : "no"}
-                            onChange={(e) =>
-                                change("within", e.target.value === "yes")
-                            }
-                        >
-                            <option value="yes">
-                                {t("Innenfor", "Inside")}
-                            </option>
-                            <option value="no">
-                                {t("Utenfor", "Outside")}
-                            </option>
-                        </select>
-                    </label>
-                </div>
-                <div className="two-fields">
-                    {coord("lat", t("Breddegrad", "Latitude"), -90, 90)}
-                    {coord("lng", t("Lengdegrad", "Longitude"), -180, 180)}
-                </div>
-            </fieldset>
-        );
-    if (question.id === "thermometer")
-        return (
-            <fieldset disabled={busy}>
-                <p className="small muted">
-                    {t("Fra punkt A til punkt B:", "From point A to point B:")}
-                </p>
-                <div className="two-fields">
-                    {coord(
-                        "latA",
-                        "A · " + t("breddegrad", "latitude"),
-                        -90,
-                        90,
-                    )}
-                    {coord(
-                        "lngA",
-                        "A · " + t("lengdegrad", "longitude"),
-                        -180,
-                        180,
-                    )}
-                    {coord(
-                        "latB",
-                        "B · " + t("breddegrad", "latitude"),
-                        -90,
-                        90,
-                    )}
-                    {coord(
-                        "lngB",
-                        "B · " + t("lengdegrad", "longitude"),
-                        -180,
-                        180,
-                    )}
-                </div>
-                <label className="field">
-                    {t("Svar", "Answer")}
-                    <select
-                        value={question.data.warmer ? "yes" : "no"}
-                        onChange={(e) =>
-                            change("warmer", e.target.value === "yes")
-                        }
-                    >
-                        <option value="yes">
-                            {t(
-                                "Varmere — B er nærmere",
-                                "Warmer — B is closer",
-                            )}
-                        </option>
-                        <option value="no">
-                            {t(
-                                "Kaldere — A er nærmere",
-                                "Colder — A is closer",
-                            )}
-                        </option>
-                    </select>
-                </label>
-            </fieldset>
-        );
-    const Editor =
-        question.id === "matching"
-            ? MatchingQuestionComponent
-            : question.id === "measuring"
-              ? MeasuringQuestionComponent
-              : TentacleQuestionComponent;
-    return (
-        <div className="legacy-editor">
-            <Editor data={question.data as any} questionKey={question.key} />
-        </div>
-    );
-}
-
-function GamePanel() {
-    const t = useText(),
-        qs = useStore(questions),
-        busy = useStore(isLoading),
-        history = useStore(historyState),
-        map = useStore(leafletMapContext),
-        boundary = useStore(polyGeoJSON);
-    const [editing, setEditing] = useState<number | null>(null),
-        [confirm, setConfirm] = useState<"clear" | "preset" | null>(null),
-        [setup, setSetup] = useState(false);
-    const input = useRef<HTMLInputElement>(null);
-    const confirmationRef = useModalFocus<HTMLDivElement>(
-        confirm !== null,
-        () => setConfirm(null),
-    );
-    const add = (id: keyof typeof questionInfo) => {
-        if (!map || busy) return;
-        const c = map.getCenter();
-        const data =
-            id === "thermometer"
-                ? {
-                      latA: c.lat,
-                      lngA: c.lng,
-                      latB: c.lat + 0.01,
-                      lngB: c.lng + 0.025,
-                  }
-                : id === "radius"
-                  ? { lat: c.lat, lng: c.lng, radius: 2, unit: "kilometers" }
-                  : { lat: c.lat, lng: c.lng };
-        addQuestion({ id, data } as any);
-        setEditing(questions.get().at(-1)!.key);
-    };
-    const download = () => {
-        const url = URL.createObjectURL(
-            new Blob([JSON.stringify(exportSession(), null, 2)], {
-                type: "application/json",
-            }),
-        );
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "hide-seek-oslo.json";
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-    };
-    const importFile = async (file?: File) => {
-        if (!file) return;
-        try {
-            if (file.size > 5_000_000) throw Error();
-            const session = parseSession(await file.text());
-            if (
-                qs.length &&
-                !window.confirm(
-                    t(
-                        "Erstatte spillet med filen?",
-                        "Replace the current game with this file?",
-                    ),
-                )
-            )
-                return;
-            applySession(session);
-            setEditing(null);
-            toast.success(t("Spillet er importert", "Game imported"));
-        } catch {
-            toast.error(
-                t(
-                    "Ugyldig spillfil. Spillet ditt er beholdt.",
-                    "Invalid game file. Your game was kept.",
-                ),
-            );
-        } finally {
-            if (input.current) input.current.value = "";
-        }
-    };
-    return (
-        <>
-            <div className="section-eyebrow">
-                <span className="status-dot" />
-                {t("JAKTEN ER I GANG", "THE HUNT IS ON")}
-            </div>
-            <h1>
-                {t("Neste spor?", "Next clue?")}
-                <br />
-                <span>{t("Det er din tur.", "Your move.")}</span>
-            </h1>
-            <p className="intro">
-                {t(
-                    "Still et spørsmål. Legg inn svaret. Snevre inn gjemmestedet.",
-                    "Ask a question. Add the answer. Narrow down the hiding spot.",
-                )}
-            </p>
-            <button
-                className="boundary-button"
-                aria-expanded={setup}
-                onClick={() => setSetup(!setup)}
-            >
-                <span className="mode-icon">
-                    <Flag size={18} />
-                </span>
-                <span>
-                    <strong>{t("Spilleområde", "Playing area")}</strong>
-                    <small>
-                        {boundary?.features[0]?.properties?.name ||
-                            t("Egendefinert område", "Custom area")}
-                    </small>
-                </span>
-                <ChevronDown size={17} />
-            </button>
-            {setup && (
-                <div className="setup-box">
-                    <p className="small">
-                        {t(
-                            "Oslo-presetet dekker byområdet. Bruk polygonverktøyet nederst til venstre på kartet for å tegne et nytt område. Et nytt område starter en ny spørsmålsrekke.",
-                            "The Oslo preset covers the urban area. Use the polygon tool at the lower left of the map to draw a new area. A new area starts a new question history.",
-                        )}
-                    </p>
-                    <button
-                        className="secondary-button"
-                        disabled={busy}
-                        onClick={() => setConfirm("preset")}
-                    >
-                        {t("Bruk Oslo-preset", "Use Oslo preset")}
-                    </button>
-                    <button
-                        className="secondary-button"
-                        onClick={() => {
-                            const button =
-                                document.querySelector<HTMLAnchorElement>(
-                                    ".leaflet-draw-draw-polygon",
-                                );
-                            button?.click();
-                        }}
-                    >
-                        {t("Tegn nytt område", "Draw new area")}{" "}
-                        <ArrowUpRight size={14} />
-                    </button>
-                </div>
-            )}
-            <div className="panel-heading">
-                <h2>{t("Legg til et spørsmål", "Add a question")}</h2>
-                <Plus size={17} />
-            </div>
-            <div className="question-types">
-                {Object.entries(questionInfo).map(([id, info]) => (
-                    <button
-                        disabled={busy || !map}
-                        key={id}
-                        onClick={() => add(id as keyof typeof questionInfo)}
-                    >
-                        <info.icon size={20} />
-                        <span>{t(info.nb, info.en)}</span>
-                        <Plus size={14} />
-                    </button>
-                ))}
-            </div>
-            <div className="panel-heading history-heading">
-                <h2>
-                    {t("Sporene dine", "Your clues")}{" "}
-                    <span className="count-badge">{qs.length}</span>
-                </h2>
-                <div className="history-actions">
-                    <button
-                        aria-label={t("Angre", "Undo")}
-                        disabled={!history.undo || busy}
-                        onClick={() => stepHistory("undo")}
-                    >
-                        <Undo2 size={17} />
-                    </button>
-                    <button
-                        aria-label={t("Gjør om", "Redo")}
-                        disabled={!history.redo || busy}
-                        onClick={() => stepHistory("redo")}
-                    >
-                        <Redo2 size={17} />
-                    </button>
-                </div>
-            </div>
-            {!qs.length ? (
-                <div className="empty-state">
-                    <span className="empty-orbit">
-                        <MapPin size={27} />
-                    </span>
-                    <strong>
-                        {t(
-                            "Alle muligheter er åpne",
-                            "Every possibility is open",
-                        )}
-                    </strong>
-                    <p>
-                        {t(
-                            "Det første spørsmålet setter jakten i gang.",
-                            "Your first question gets the hunt going.",
-                        )}
-                    </p>
-                </div>
-            ) : (
-                <ol className="clue-list">
-                    {qs.map((q, i) => {
-                        const info = questionInfo[q.id];
-                        return (
-                            <li
-                                key={q.key}
-                                className={
-                                    editing === q.key
-                                        ? "clue-card active"
-                                        : "clue-card"
-                                }
-                            >
-                                <div className="clue-header">
-                                    <span className="clue-number">
-                                        {String(i + 1).padStart(2, "0")}
-                                    </span>
-                                    <button
-                                        className="clue-title"
-                                        aria-expanded={editing === q.key}
-                                        onClick={() =>
-                                            setEditing(
-                                                editing === q.key
-                                                    ? null
-                                                    : q.key,
-                                            )
-                                        }
-                                    >
-                                        <strong>{t(info.nb, info.en)}</strong>
-                                        <small>
-                                            {t(
-                                                info.description[0],
-                                                info.description[1],
-                                            )}
-                                        </small>
-                                    </button>
-                                    <button
-                                        className="icon-button"
-                                        aria-label={t(
-                                            "Slett spørsmål",
-                                            "Delete question",
-                                        )}
-                                        disabled={busy}
-                                        onClick={() =>
-                                            questions.set(
-                                                qs.filter(
-                                                    (x) => x.key !== q.key,
-                                                ),
-                                            )
-                                        }
-                                    >
-                                        <Trash2 size={15} />
-                                    </button>
-                                </div>
-                                {editing === q.key && (
-                                    <BasicEditor question={q} />
-                                )}
-                            </li>
-                        );
-                    })}
-                </ol>
-            )}
-            <p className="saved-note">
-                <Check size={14} />
-                {busy
-                    ? t(
-                          "Beregner mulige gjemmesteder…",
-                          "Calculating possible hiding spots…",
-                      )
-                    : t(
-                          "Lagres automatisk på denne enheten",
-                          "Automatically saved on this device",
-                      )}
-            </p>
-            <button
-                className="zones-button secondary-button"
-                onClick={() => ZoneContext.get().toggleSidebar()}
-            >
-                <Layers size={15} />
-                {t("Avanserte gjemmeområder", "Advanced hiding zones")}{" "}
-                <ArrowUpRight size={14} />
-            </button>
-            <div className="session-actions">
-                <button onClick={download}>
-                    <ArrowDownToLine size={16} />
-                    {t("Eksporter", "Export")}
-                </button>
-                <button onClick={() => input.current?.click()} disabled={busy}>
-                    <ArrowUpFromLine size={16} />
-                    {t("Importer", "Import")}
-                </button>
-                <button
-                    className="danger"
-                    disabled={!qs.length || busy}
-                    onClick={() => setConfirm("clear")}
-                    aria-label={t("Tøm spillet", "Clear game")}
-                >
-                    <Trash2 size={16} />
-                </button>
-                <input
-                    ref={input}
-                    type="file"
-                    accept="application/json,.json"
-                    hidden
-                    onChange={(e) => importFile(e.target.files?.[0])}
-                />
-            </div>
-            {confirm && (
-                <div
-                    ref={confirmationRef}
-                    className="confirmation"
-                    role="alertdialog"
-                    aria-modal="true"
-                    aria-label={t("Starte på nytt?", "Start again?")}
-                >
-                    <strong>{t("Starte på nytt?", "Start again?")}</strong>
-                    <p>
-                        {t(
-                            "Spørsmålene fjernes. Du kan angre etterpå.",
-                            "Questions will be cleared. You can undo afterwards.",
-                        )}
-                    </p>
+                <details className="data-note">
+                    <summary>{t("Kartdata", "Map data")}</summary>
                     <div>
-                        <button
-                            autoFocus
-                            className="secondary-button"
-                            onClick={() => setConfirm(null)}
+                        {t(
+                            "Nettverkskart, ikke sanntid.",
+                            "Network map, not live service.",
+                        )}{" "}
+                        {data.omittedPatterns > 0 && (
+                            <span className="coverage-note">
+                                {t(
+                                    "Noen avganger mangler nøyaktig geometri og er utelatt, blant annet Flytoget.",
+                                    "Some services lack accurate geometry and are omitted, including Flytoget.",
+                                )}
+                            </span>
+                        )}
+                        <br />
+                        {t(
+                            "Linjefarger: Ruter. Tog: Bane NOR.",
+                            "Line colours: Ruter. Trains: Bane NOR.",
+                        )}
+                        <br />
+                        {t("Datert", "Snapshot")}{" "}
+                        {new Date(data.fetchedAt).toLocaleDateString(
+                            t("nb-NO", "en-GB"),
+                        )}{" "}
+                        ·{" "}
+                        <a
+                            href="https://developer.entur.no/terms-of-service"
+                            target="_blank"
+                            rel="noreferrer"
                         >
-                            {t("Avbryt", "Cancel")}
-                        </button>
-                        <button
-                            className="primary-button"
-                            onClick={() => {
-                                if (confirm === "preset")
-                                    applySession(
-                                        parseSession(
-                                            JSON.stringify({
-                                                version: 1,
-                                                questions: [],
-                                                boundary: osloBounds,
-                                            }),
-                                        ),
-                                    );
-                                else questions.set([]);
-                                drawingQuestionKey.set(-1);
-                                setEditing(null);
-                                setConfirm(null);
-                            }}
+                            Entur / NLOD
+                        </a>
+                        <br />
+                        <a
+                            href="https://ruter.no/planlegg-reise/rutetabeller-og-linjekart"
+                            target="_blank"
+                            rel="noreferrer"
                         >
-                            {t("Start på nytt", "Start again")}
-                        </button>
+                            {t(
+                                "Se Ruters offisielle linjekart",
+                                "Ruter official network maps",
+                            )}{" "}
+                            ↗
+                        </a>
                     </div>
-                </div>
+                </details>
             )}
         </>
     );
@@ -1137,8 +544,8 @@ function PlaceSearch() {
                     "Search places or stops",
                 )}
                 placeholder={t(
-                    "Hvor går jakten videre?",
-                    "Where does the hunt go next?",
+                    "Søk sted eller holdeplass",
+                    "Search places or stops",
                 )}
                 value={text}
                 onChange={(e) => setText(e.target.value)}
@@ -1154,9 +561,7 @@ function PlaceSearch() {
                 >
                     <X size={17} />
                 </button>
-            ) : (
-                <kbd>OSLO</kbd>
-            )}
+            ) : null}
             {text.length >= 2 && (results.length > 0 || status) && (
                 <div className="search-results">
                     {results.map((p) => (
@@ -1258,30 +663,41 @@ function RouteDetail() {
 
 function OsloShell() {
     useState(() => {
+        const invited = new URLSearchParams(location.search).get("room");
+        if (invited && credentials.get() && invited !== credentials.get()!.code)
+            leaveRoom();
         if (!polyGeoJSON.get()) polyGeoJSON.set(osloBounds);
         mapGeoJSON.set(polyGeoJSON.get());
         hiderMode.set(false);
+        multiplayerActive.set(true);
         return true;
     });
-    const failed = useStore(calculationError);
+    const currentRoom = useStore(room);
+    const qs = currentRoom?.game.questions || [];
     const t = useText(),
         lang = useStore(language),
-        qs = useStore(questions),
         map = useStore(leafletMapContext),
-        busy = useStore(isLoading),
-        prefs = useStore(transitPrefs),
-        finished = useStore(questionFinishedMapData);
-    const [tab, setTab] = useState<"network" | "game">("network"),
+        prefs = useStore(transitPrefs);
+    const [tab, setTab] = useState<"network" | "game">(
+            new URLSearchParams(location.search).has("room") ||
+                location.hash === "#game"
+                ? "game"
+                : "network",
+        ),
         [collapsed, setCollapsed] = useState(false),
         [help, setHelp] = useState(false);
     useEffect(() => {
         loadTransit();
-        return startHistory();
+        multiplayerActive.set(true);
+        if ("serviceWorker" in navigator)
+            void navigator.serviceWorker.register("/sw.js").catch(() => {});
     }, []);
     useEffect(() => {
         document.documentElement.lang = lang;
     }, [lang]);
     const helpRef = useModalFocus<HTMLElement>(help, () => setHelp(false));
+    const credential = useStore(credentials);
+    useEffect(() => connectRoom(), [credential?.code, credential?.token]);
     const locate = () => {
         if (!navigator.geolocation) {
             toast.error(
@@ -1309,15 +725,7 @@ function OsloShell() {
             { timeout: 15000, maximumAge: 30000 },
         );
     };
-    const remaining = (() => {
-        if (!finished || !qs.length) return null;
-        try {
-            const possible = holedMask(finished);
-            return possible ? turf.area(possible) / 1e6 : 0;
-        } catch {
-            return null;
-        }
-    })();
+
     return (
         <div className={`oslo-app ${collapsed ? "panel-collapsed" : ""}`}>
             <a className="skip-link" href="#explore-panel">
@@ -1331,7 +739,7 @@ function OsloShell() {
                     <div>
                         hide<span className="brand-amp">&</span>seek
                         <span className="brand-city">
-                            OSLO EDITION <span>↗</span>
+                            Oslo <span>↗</span>
                         </span>
                     </div>
                     <button
@@ -1344,7 +752,7 @@ function OsloShell() {
                             language.set(lang === "nb" ? "en" : "nb")
                         }
                     >
-                        {lang === "nb" ? "EN" : "NO"}
+                        {lang === "nb" ? "English" : "Norsk"}
                     </button>
                 </header>
                 <button
@@ -1389,36 +797,19 @@ function OsloShell() {
                     </button>
                 </nav>
                 <div className="panel-scroll">
-                    {tab === "network" ? <NetworkPanel /> : <GamePanel />}
+                    {tab === "network" ? <NetworkPanel /> : <RoomPanel />}
                 </div>
-                <footer className="panel-footer">
-                    <span>
-                        <MapPin size={13} />{" "}
-                        {t(
-                            "Laget for små og store omveier",
-                            "Made for little detours",
-                        )}
-                    </span>
-                    <button
-                        aria-label={t(
-                            "Hjelp og kreditering",
-                            "Help and credits",
-                        )}
-                        onClick={() => setHelp(true)}
-                    >
-                        <CircleHelp size={17} />
-                    </button>
-                </footer>
             </aside>
             <main className="map-stage">
                 <div className="map-canvas">
                     <Map />
                     <TransitLayers />
+                    <RoomMap />
                 </div>
                 <div className="map-topbar">
                     <div className="location-pill">
                         <span className="status-dot" />
-                        OSLO, NORGE <span className="pill-divider" />
+                        Oslo <span className="pill-divider" />
                         59.91° N
                     </div>
                     <PlaceSearch />
@@ -1430,18 +821,7 @@ function OsloShell() {
                         <CircleHelp size={20} />
                     </button>
                 </div>
-                <div className="map-heading">
-                    <span className="map-kicker">
-                        {t(
-                            "BYEN ER SPILLEBRETTET",
-                            "THE CITY IS YOUR PLAYING FIELD",
-                        )}
-                    </span>
-                    <p>
-                        {t("Ta en omvei.", "Take a detour.")}{" "}
-                        <Sparkles size={17} />
-                    </p>
-                </div>
+
                 <div className="map-navigation">
                     <button
                         aria-label={t("Zoom inn", "Zoom in")}
@@ -1473,7 +853,7 @@ function OsloShell() {
                 <div className="map-bottom">
                     <div className="map-legend">
                         <span className="legend-title">
-                            {t("PÅ KARTET", "ON THE MAP")}
+                            {t("På kartet", "On the map")}
                         </span>
                         <div>
                             {modes
@@ -1492,7 +872,7 @@ function OsloShell() {
                         <div className="area-legend">
                             <span>
                                 <i className="remaining-swatch" />
-                                {t("Mulig gjemmested", "Possible hiding area")}
+                                {t("Spilleområde", "Playing area")}
                             </span>
                             <span>
                                 <i className="excluded-swatch" />
@@ -1512,25 +892,18 @@ function OsloShell() {
                         </span>
                         <span>
                             <strong>
-                                {failed
-                                    ? t(
-                                          "Beregningen feilet",
-                                          "Calculation failed",
-                                      )
-                                    : busy
-                                      ? t("Kartet tenker…", "Thinking…")
-                                      : remaining !== null
-                                        ? `${remaining.toFixed(1)} km² ${t("gjenstår", "remaining")}`
-                                        : t(
-                                              "Jakten starter med deg",
-                                              "The hunt starts with you",
-                                          )}
+                                {currentRoom
+                                    ? currentRoom.game.name
+                                    : t(
+                                          "Opprett eller bli med",
+                                          "Create or join",
+                                      )}
                             </strong>
                             <small>
                                 {qs.length}{" "}
                                 {t(
-                                    "spørsmål stilt · Åpne spillet",
-                                    "questions asked · Open the game",
+                                    "spørsmål · Åpne spill",
+                                    "questions · Open game",
                                 )}
                             </small>
                         </span>
@@ -1556,25 +929,18 @@ function OsloShell() {
                         >
                             <X />
                         </button>
-                        <span className="section-eyebrow">
-                            HIDE & SEEK OSLO
-                        </span>
-                        <h2 id="help-title">
-                            {t(
-                                "Byen er full av muligheter.",
-                                "The city is full of possibilities.",
-                            )}
-                        </h2>
+
+                        <h2 id="help-title">{t("Om appen", "About")}</h2>
                         <p>
                             {t(
-                                "Utforsk kollektivnettet, og åpne Spillet for å velge område og legge til spørsmål. Svarene snevrer inn mulige gjemmesteder. Bruk kartets tegneverktøy for egne grenser.",
-                                "Explore the transit network, then open The game to choose an area and add questions. Answers narrow down possible hiding spots. Use the drawing tool for custom boundaries.",
+                                "Opprett et spill og del invitasjonen. Bruk den fysiske boka for nøyaktige spørsmålsregler.",
+                                "Create a game and share the invitation. Use the physical book for exact question rules.",
                             )}
                         </p>
                         <p>
                             {t(
-                                "Spillet lagres lokalt. Eksport inkluderer spørsmål og grenser, aldri en separat privat hider-posisjon. Avanserte spørsmål bruker åpne karttjenester og trenger nett.",
-                                "Your game is saved locally. Exports include questions and boundaries, never a separate private hider position. Advanced questions use open map services and need internet.",
+                                "Spill synkroniseres mellom enheter. Gjemmelagets posisjon deles aldri.",
+                                "Games sync across devices. The hiding team’s location is never shared.",
                             )}
                         </p>
                         <p>
@@ -1608,10 +974,5 @@ function OsloShell() {
 }
 
 export function OsloApp() {
-    return (
-        <ZoneProvider defaultOpen={false}>
-            <OsloShell />
-            <ZoneSidebar />
-        </ZoneProvider>
-    );
+    return <OsloShell />;
 }
